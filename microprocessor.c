@@ -1,7 +1,9 @@
 #include <stdint.h>
 #include <stdio.h>
 
-struct microprocessor_s {
+typedef int8_t (*operator)(int8_t param);
+
+typedef struct {
     int8_t R[8];
     int16_t PC;
     int8_t DL;
@@ -13,10 +15,9 @@ struct microprocessor_s {
     int16_t addressBus;
     int8_t CS;
     int16_t ram[1024];
-    int8_t ALUcom;
+    operator ALUcom;
     int8_t* ALUoutRegister;
-};
-typedef struct microprocessor_s microprocessor_t;
+} microprocessor_t;
 
 microprocessor_t microprocessor;
 
@@ -103,11 +104,36 @@ void RepY() {
 }
 
 void ALUout() {
-    // TODO
+    *microprocessor.ALUoutRegister = microprocessor.ALUcom;
     microprocessor.ALUoutRegister = &microprocessor.dataBus;
 }
 
-/*void main() {
+// Operators for ALU
+
+void ADD() {
+    microprocessor.ALUcom = (microprocessor.X + microprocessor.Y);
+}
+
+void SUB() {
+    microprocessor.ALUcom = (microprocessor.X - microprocessor.Y);
+}
+
+void MULT() {
+    microprocessor.ALUcom = (microprocessor.X * microprocessor.Y);
+}
+
+void DIV() {
+    microprocessor.ALUcom = (microprocessor.X / microprocessor.Y);
+}
+
+
+// IR signals
+
+void IRin() {
+    microprocessor.IR = microprocessor.dataBus;
+}
+ 
+/*int main() {
     microprocessor.PC = 16385;
     microprocessor.dataBus = 2;
     PCLin();
@@ -116,3 +142,12 @@ void ALUout() {
     printf("ptr: %p value: %d\n", (&microprocessor.PC), v);
     printf("ptr: %p value: %d", &microprocessor.PC + 1, *((int8_t*)&microprocessor.PC + 1));
 }*/
+
+int main() {
+    microprocessor.X = 5;
+    microprocessor.Y = 2;
+    microprocessor.ALUoutRegister = &microprocessor.dataBus;
+    MULT();
+    ALUout();
+    printf("%d", microprocessor.dataBus);
+}
