@@ -121,10 +121,10 @@ void decodeOpcode(int8_t* opcode) {
 }
 
 int main() {
-    unsigned char opcode1 = 0b01011010; 
-    unsigned char opcode2 = 0b01100011;
-    unsigned char opcode3 = 0b10011010;
-    unsigned char opcode4 = 0b01010000;
+    int8_t opcode1 = 0b01011010; 
+    int8_t opcode2 = 0b01100011;
+    int8_t opcode3 = 0b10011010;
+    int8_t opcode4 = 0x78;
 
     decodeOpcode(&opcode1);
     decodeOpcode(&opcode2);
