@@ -59,10 +59,12 @@ void jmp_rx0(int8_t variablePart){
     printf("JMP RX0\n");
 }
 void st_r0_rxn(int8_t variablePart){
-    printf("ST R%d, RXn\n",variablePart);
+    int8_t RXn = (variablePart & 0b00000011);
+    printf("ST R0, RX%d\n",RXn);
 }
 void ld_r0_rxn(int8_t variablePart){
-    printf("LD R%d, RXn\n",variablePart);
+    int8_t RXn = (variablePart & 0b00000011);
+    printf("LD R0, RX%d\n",RXn);
 }
 void st_rn_hhll(int8_t variablePart){
     printf("ST R%d, HHLL\n",variablePart);
@@ -80,7 +82,7 @@ static Instruction instructionSet[NUM_INSTRUCTIONS] = {
     {0b01110001,0b11111111,jz_hhll},
     {0b01110010,0b11111111,jc_hhll},
     {0b01110011,0b11111111,jmp_rx0},
-    {0b01110111,0b11111100,st_r0_rxn},
+    {0b01111011,0b11111100,st_r0_rxn},
     {0b01111111,0b11111100,ld_r0_rxn},
     {0b01000111,0b11111000,st_rn_hhll},
     {0b01001111,0b11111000,ld_rn_hhll},
@@ -121,15 +123,43 @@ void decodeOpcode(int8_t* opcode) {
 }
 
 int main() {
-    unsigned char opcode1 = 0b01011010; 
-    unsigned char opcode2 = 0b01100011;
-    unsigned char opcode3 = 0b10011010;
-    unsigned char opcode4 = 0b01010000;
+    int8_t opcode1 = 0b01011010; 
+    int8_t opcode2 = 0b01100011;
+    int8_t opcode3 = 0b10011010;
+    int8_t opcode4 = 0b01010000;
+    int8_t opcode5 = 0x78;
+    int8_t opcode6 = 0x42;
+    int8_t opcode7 = 0x49;
+    int8_t opcode8 = 0x53;
+    int8_t opcode9 = 0x7F;
+    int8_t opcode10 = 0x81;
+    int8_t opcode11 = 0xF5;
+    int8_t opcode12 = 0x70;
+    int8_t opcode13 = 0x73;
+    int8_t opcode14 = 0b01101001;
+    int8_t opcode15 = 0b01110001;
+    int8_t opcode16 = 0b01110010;
+    int8_t opcode17 = 0b01111001;
+    int8_t opcode18 = 0b01111101;
 
     decodeOpcode(&opcode1);
     decodeOpcode(&opcode2);
     decodeOpcode(&opcode3);
     decodeOpcode(&opcode4);
+    decodeOpcode(&opcode5);
+    decodeOpcode(&opcode6);
+    decodeOpcode(&opcode7);
+    decodeOpcode(&opcode8);
+    decodeOpcode(&opcode9);
+    decodeOpcode(&opcode10);
+    decodeOpcode(&opcode11);
+    decodeOpcode(&opcode12);
+    decodeOpcode(&opcode13);
+    decodeOpcode(&opcode14);
+    decodeOpcode(&opcode15);
+    decodeOpcode(&opcode16);
+    decodeOpcode(&opcode17);
+    decodeOpcode(&opcode18);
 
     return 0;
 }
