@@ -130,6 +130,14 @@ void divALU() {
     microprocessor.ALUcom = (microprocessor.X / microprocessor.Y);
 }
 
+void incALU() {
+    microprocessor.ALUcom = (microprocessor.X + 1);
+}
+
+void decALU() {
+    microprocessor.ALUcom = (microprocessor.X - 1);
+}
+
 
 // IR signals
 
