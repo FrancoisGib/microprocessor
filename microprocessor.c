@@ -2,4 +2,4 @@
 
 struct microprocessor_s {
     int8_t 
-};
+}

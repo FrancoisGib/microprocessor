@@ -20,29 +20,30 @@ void not_Rn(int8_t variablePart){
 }
 void add_Rn_Rm(int8_t variablePart){
     //Décalage vers le bit de poids faible sinon marche pas
-    int8_t Rn = (variablePart & 0b11000000) >> 5;
+    //Maskage pour récupérer la valeur qui nous intéresse
+    int8_t Rn = (variablePart & 0b00011000) >> 3;
     //Déjà dans le bit de poids faible
-    int8_t Rm = variablePart & 0b00111111;
+    int8_t Rm = variablePart & 0b00000111;
     printf("ADD R%d, R%d\n",Rn,Rm);
 }
 void sub_Rn_Rm(int8_t variablePart){
-    int8_t Rn = (variablePart & 0b11000000) >> 5;
-    int8_t Rm = variablePart & 0b00111111;
+    int8_t Rn = (variablePart & 0b00011000) >> 3;
+    int8_t Rm = variablePart & 0b00000111;
     printf("SUB R%d, R%d\n",Rn,Rm);
 }
 void and_Rn_Rm(int8_t variablePart){
-    int8_t Rn = (variablePart & 0b11000000) >> 5;
-    int8_t Rm = variablePart & 0b00111111;
+    int8_t Rn = (variablePart & 0b00011000) >> 3;
+    int8_t Rm = variablePart & 0b00000111;
     printf("AND R%d, R%d\n",Rn,Rm);
 }
 void swp_Rn_Rm(int8_t variablePart){
-    int8_t Rn = (variablePart & 0b11000000) >> 5;
-    int8_t Rm = variablePart & 0b00111111;
+    int8_t Rn = (variablePart & 0b00011000) >> 3;
+    int8_t Rm = variablePart & 0b00000111;
     printf("SWP R%d, R%d\n",Rn,Rm);
 }
 void mv_Rn_Rm(int8_t variablePart){
-    int8_t Rn = (variablePart & 0b11100000) >> 5;
-    int8_t Rm = variablePart & 0b00011111;
+    int8_t Rn = (variablePart & 0b00111000) >> 3;
+    int8_t Rm = variablePart & 0b00000111;
     printf("MV R%d, R%d\n",Rn,Rm);
 }
 void jmp_hhll(int8_t variablePart){
@@ -58,24 +59,19 @@ void jmp_rx0(int8_t variablePart){
     printf("JMP RX0\n");
 }
 void st_r0_rxn(int8_t variablePart){
-    int8_t Rn = (variablePart & 0b11000000) >> 6;
-    printf("ST R%d, RXn\n",Rn);
+    printf("ST R%d, RXn\n",variablePart);
 }
 void ld_r0_rxn(int8_t variablePart){
-    int8_t Rn = (variablePart & 0b11000000) >> 6;
-    printf("LD R%d, RXn\n",Rn);
+    printf("LD R%d, RXn\n",variablePart);
 }
 void st_rn_hhll(int8_t variablePart){
-    int8_t Rn = (variablePart & 0b11100000) >> 5;
-    printf("ST R%d, HHLL\n",Rn);
+    printf("ST R%d, HHLL\n",variablePart);
 }
 void ld_rn_hhll(int8_t variablePart){
-    int8_t Rn = (variablePart & 0b11100000) >> 5;
-    printf("LD R%d, HHLL\n",Rn);
+    printf("LD R%d, HHLL\n",variablePart);
 }
 void mv_rn_arg(int8_t variablePart){
-    int8_t Rn = (variablePart & 0b11100000) >> 5;
-    printf("mv R%d, arg#\n",Rn);
+    printf("mv R%d, arg#\n",variablePart);
 }
 
 
@@ -127,11 +123,13 @@ void decodeOpcode(int8_t* opcode) {
 int main() {
     unsigned char opcode1 = 0b01011010; 
     unsigned char opcode2 = 0b01100011;
-    unsigned char opcode3 = 0b10001110;
+    unsigned char opcode3 = 0b10011010;
+    unsigned char opcode4 = 0b01010000;
 
     decodeOpcode(&opcode1);
     decodeOpcode(&opcode2);
     decodeOpcode(&opcode3);
+    decodeOpcode(&opcode4);
 
     return 0;
 }
