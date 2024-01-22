@@ -42,7 +42,7 @@ void DLout() {
     microprocessor.dataBus = microprocessor.DL;
 }
 
-void DLint() {
+void DLin() {
     microprocessor.DL = microprocessor.dataBus;
 }
 

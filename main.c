@@ -1,6 +1,5 @@
 #include <stdio.h>
-#include "assembly.h"
-#include "decoder.h"
+#include "lib.h"
 
 int main() {
     microprocessor_t *process = getMicroProcessor();

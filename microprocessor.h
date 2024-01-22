@@ -15,9 +15,8 @@ typedef struct {
     int8_t Y;
     ALUop ALUcom;
     int8_t ram[1024];
+    int8_t controlUnit[3];
 } microprocessor_t;
-
-void init_microprocessor();
 
 // R registers signals
 void SR(int i);
@@ -32,7 +31,7 @@ void PCLin();
 
 // DLatch signals
 void DLout();
-void DLint();
+void DLin();
 
 // AddressLatch signals
 void ALin();
