@@ -1,4 +1,5 @@
 #include "microprocessor.h"
+#include"decoder.h"
 
 microprocessor_t microprocessor;
 
@@ -15,7 +16,6 @@ void Rin() {
 void Rout() {
     microprocessor.dataBus = microprocessor.R[microprocessor.CS];
 }
-
 
 // PC signals
 
@@ -132,73 +132,7 @@ void write() {
     microprocessor.ram[microprocessor.AL] = microprocessor.DL;
 }
 
-
-
-// Assembly instructions
-
-void ADD(int8_t Rn, int8_t Rm) {
-    SR(Rn); Rout(), Xin();
-    SR(Rm), Rout(), Yin();
-    addALU(); ALUout(); SR(Rn); Rin();
+microprocessor_t *getMicroProcessor(){
+    return &microprocessor;
 }
 
-void SUB(int8_t Rn, int8_t Rm) {
-    SR(Rn); Rout(), Xin();
-    SR(Rm), Rout(), Yin();
-    subALU(); ALUout(); SR(Rn); Rin();
-}
-
-void MULT(int8_t Rn, int8_t Rm) {
-    SR(Rn); Rout(), Xin();
-    SR(Rm), Rout(), Yin();
-    multALU(); ALUout(); SR(Rn); Rin();
-}
-
-void DIV(int8_t Rn, int8_t Rm) {
-    SR(Rn); Rout(), Xin();
-    SR(Rm), Rout(), Yin();
-    divALU(); ALUout(); SR(Rn); Rin();
-}
-
-void MV(int8_t Rn, int8_t Rm) {
-    SR(Rm); Rout();
-    SR(Rn); Rin();
-}
-
-void SWP(int8_t Rn, int8_t Rm) {
-    SR(Rn); Rout(); Xin();
-    SR(Rm); Rout(); Yin();
-    RepX(); ALUout(); SR(Rm); Rin();
-    RepY(); ALUout(); SR(Rn); Rin();
-}
-
-/*int main() {
-    microprocessor.PC = 16385;
-    microprocessor.dataBus = 2;
-    PCLin();
-    PCHin();
-    int8_t v = *((int8_t*)&microprocessor.PC);
-    printf("ptr: %p value: %d\n", (&microprocessor.PC), v);
-    printf("ptr: %p value: %d", &microprocessor.PC + 1, *((int8_t*)&microprocessor.PC + 1));
-}*/
-
-
-
-int main() {
-    init();
-    microprocessor.X = 5;
-    microprocessor.Y = 2;
-    multALU();
-    ALUout();
-    printf("DataBus : %d\n", microprocessor.dataBus);
-
-    microprocessor.ram[1] = 12;
-    microprocessor.AL = 1;
-    read();
-    printf("DataLatch : %d\n", microprocessor.DL);
-
-    microprocessor.R[3] = 20;
-    microprocessor.R[5] = 10;
-    ADD(3, 5);
-    printf("R3 after ADD R3, R5 : %d", microprocessor.R[3]);
-}

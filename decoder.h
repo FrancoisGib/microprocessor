@@ -7,7 +7,6 @@ typedef struct {
     int8_t opcode;
     int8_t mask;
     int8_t(*operation)(int8_t variablePart);
-    int8_t size;
 } Instruction;
 
 int8_t dec_Rn(int8_t variablePart);
@@ -28,5 +27,5 @@ int8_t st_rn_hhll(int8_t variablePart);
 int8_t ld_rn_hhll(int8_t variablePart);
 int8_t mv_rn_arg(int8_t variablePart);
 
-int8_t getVariablePartLength(int8_t bitmask);
-int8_t decodeOpcode(int8_t* opcode);
+int getVariablePartLength(int8_t bitmask);
+void decodeOpcode(int8_t* opcode);
