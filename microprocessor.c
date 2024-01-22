@@ -1,29 +1,6 @@
-#include <stdint.h>
-#include <stdio.h>
-
-typedef int8_t (*operator)(int8_t param);
-
-typedef struct {
-    int8_t R[8];
-    int8_t CS;
-    int16_t PC;
-    int8_t DL;
-    int16_t AL;
-    int8_t dataBus;
-    int16_t addressBus;
-    int8_t IR;
-    int8_t X;
-    int8_t Y;
-    operator ALUcom;
-    int8_t* ALUoutRegister;
-    int8_t ram[1024];
-} microprocessor_t;
+#include "microprocessor.h"
 
 microprocessor_t microprocessor;
-
-void init() {
-    microprocessor.ALUoutRegister = &microprocessor.dataBus;
-}
 
 // R registers signals
 
@@ -65,7 +42,7 @@ void DLout() {
     microprocessor.dataBus = microprocessor.DL;
 }
 
-void DLint() {
+void DLin() {
     microprocessor.DL = microprocessor.dataBus;
 }
 
@@ -99,17 +76,8 @@ void Yin() {
     microprocessor.Y = microprocessor.dataBus;
 }
 
-void RepX() {
-    microprocessor.ALUoutRegister = &microprocessor.X;
-}
-
-void RepY() {
-    microprocessor.ALUoutRegister = &microprocessor.Y;
-}
-
 void ALUout() {
-    *microprocessor.ALUoutRegister = microprocessor.ALUcom;
-    microprocessor.ALUoutRegister = &microprocessor.dataBus;
+    microprocessor.dataBus = microprocessor.ALUcom;
 }
 
 // Micro-instructions for ALU
@@ -136,6 +104,14 @@ void incALU() {
 
 void decALU() {
     microprocessor.ALUcom = (microprocessor.X - 1);
+}
+
+void RepX() {
+    microprocessor.ALUcom = microprocessor.X;
+}
+
+void RepY() {
+    microprocessor.ALUcom = microprocessor.Y;
 }
 
 
@@ -195,6 +171,17 @@ void SWP(int8_t Rn, int8_t Rm) {
     RepX(); ALUout(); SR(Rm); Rin();
     RepY(); ALUout(); SR(Rn); Rin();
 }
+
+/*int main() {
+    microprocessor.PC = 16385;
+    microprocessor.dataBus = 2;
+    PCLin();
+    PCHin();
+    int8_t v = *((int8_t*)&microprocessor.PC);
+    printf("ptr: %p value: %d\n", (&microprocessor.PC), v);
+    printf("ptr: %p value: %d", &microprocessor.PC + 1, *((int8_t*)&microprocessor.PC + 1));
+}*/
+
 
 
 int main() {
