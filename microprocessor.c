@@ -196,17 +196,6 @@ void SWP(int8_t Rn, int8_t Rm) {
     RepY(); ALUout(); SR(Rn); Rin();
 }
 
-/*int main() {
-    microprocessor.PC = 16385;
-    microprocessor.dataBus = 2;
-    PCLin();
-    PCHin();
-    int8_t v = *((int8_t*)&microprocessor.PC);
-    printf("ptr: %p value: %d\n", (&microprocessor.PC), v);
-    printf("ptr: %p value: %d", &microprocessor.PC + 1, *((int8_t*)&microprocessor.PC + 1));
-}*/
-
-
 
 int main() {
     init();
