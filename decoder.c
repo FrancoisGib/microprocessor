@@ -85,9 +85,8 @@ int8_t mv_rn_arg(int8_t variablePart){
 }
 
 
-int8_t getVariablePartLength(int8_t opcode) {
-    int8_t bitmask = instructionSet[opcode].mask;
-    int length = 0;
+int8_t getVariablePartLength(int8_t bitmask) {
+    int8_t length = 0;
     while ((bitmask & 1) == 0) {
         length++;
         bitmask >>= 1;
@@ -95,21 +94,18 @@ int8_t getVariablePartLength(int8_t opcode) {
     return length;
 }
 
-int8_t getVariablePart(int8_t opcode) {
-    int length = getVariablePartLength(opcode);
-    (opcode & ((1 << length) - 1));
-} 
-
 int8_t decodeOpcode(int8_t opcode) {
     char* correspondingInstruction = "Unknown";
     int8_t variablePart = 0;
-    for (int i = 0; i < NUM_INSTRUCTIONS; ++i) {
 
+    for (int i = 0; i < NUM_INSTRUCTIONS; ++i) {
         if ((instructionSet[i].opcode & instructionSet[i].mask) == (opcode & instructionSet[i].mask)) {
-            variablePart = getVariablePart(opcode);
+            int variablePartLength = getVariablePartLength(instructionSet[i].mask);
+            variablePart = (opcode & ((1 << variablePartLength) - 1));
             instructionSet[i].operation(variablePart);
             return i;
         }
     }
 }
+
 

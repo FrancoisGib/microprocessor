@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "lib.h"
 
-int main() {
+/*int main() {
     microprocessor_t *process = getMicroProcessor();
 
     process->X = 5;
@@ -21,4 +21,11 @@ int main() {
     printf("R3 after ADD R3, R5 : %d", process->R[3]);
 
     ALUout();
+}*/
+
+int main() {
+    //microprocessor_t* process = getMicroProcessor();
+    char* pathname = "a.s";
+    readFile(pathname);
+    //decodeOpcode(0b01110001);
 }

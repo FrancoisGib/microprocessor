@@ -58,7 +58,7 @@ void decALU();
 void IRin();
 
 // Memory requests
-void read();
-void write();
+void readSignal();
+void writeSignal();
 
 microprocessor_t* getMicroProcessor();

@@ -124,11 +124,11 @@ void IRin() {
 
 // Memory requests
 
-void read() {
+void readSignal() {
     microprocessor.DL = microprocessor.ram[microprocessor.AL];
 }
 
-void write() {
+void writeSignal() {
     microprocessor.ram[microprocessor.AL] = microprocessor.DL;
 }
 
