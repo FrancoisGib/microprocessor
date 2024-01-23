@@ -20,16 +20,17 @@ assembly_instructions instructions[17] = {
     {"mv", 2, 2}
 };
 
-int8_t hex_to_dec(char *hex) {
-   return (int)strtol(hex, NULL, 16);
+int16_t hex_to_dec(char *hex) {
+    return (int16_t)strtol(hex, NULL, 16);
 }
 
 void readFile(char* path) {
     microprocessor_t* process = getMicroProcessor();
     FILE* input = fopen(path, "r");
-    FILE* output = fopen("output.txt", "w");
-    char instruction_address[] = "    ";
+    FILE* output = fopen("output.s", "w");
+    char instruction_address[5];
     fread(instruction_address, 4, 1, input);
+    process->PC = hex_to_dec(instruction_address);
     while(strcmp(instruction_address, "FFFF") != 0) {
         fseek(input, 3, SEEK_CUR);
         char first_byte[3];

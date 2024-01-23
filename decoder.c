@@ -102,7 +102,7 @@ int8_t decodeOpcode(int8_t opcode) {
         if ((instructionSet[i].opcode & instructionSet[i].mask) == (opcode & instructionSet[i].mask)) {
             int variablePartLength = getVariablePartLength(instructionSet[i].mask);
             variablePart = (opcode & ((1 << variablePartLength) - 1));
-            instructionSet[i].operation(variablePart);
+            //instructionSet[i].operation(variablePart);
             return i;
         }
     }

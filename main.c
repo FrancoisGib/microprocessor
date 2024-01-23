@@ -25,7 +25,8 @@
 
 int main() {
     microprocessor_t* process = getMicroProcessor();
-    char* pathname = "a.s";
+    char* pathname = "input.txt";
     readFile(pathname);
-
+    printf("%d ", process->PC);
+    
 }

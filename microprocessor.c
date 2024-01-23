@@ -132,6 +132,13 @@ void writeSignal() {
     microprocessor.ram[microprocessor.AL] = microprocessor.DL;
 }
 
+void readInstruction() {
+    PCout(); ALin(); readSignal();
+    DLout(); IRin(); 
+}
+
+
+
 microprocessor_t* getMicroProcessor() {
     return &microprocessor;
 }
