@@ -24,8 +24,8 @@
 }*/
 
 int main() {
-    //microprocessor_t* process = getMicroProcessor();
+    microprocessor_t* process = getMicroProcessor();
     char* pathname = "a.s";
     readFile(pathname);
-    //decodeOpcode(0b01110001);
+
 }

@@ -17,13 +17,15 @@ typedef struct {
     int8_t opcode;    
     int8_t nb_args;
     int8_t* args;
+    int8_t* bytes;
+    int8_t nb_bytes;
 } instructions_details;
 
 int8_t hex_to_dec(char* str);
 void readFile(char* path);
-instructions_details* decodeInstructionArguments(int8_t first_byte, FILE* input);
-void decodeWhenInstructionNameLengthEqualsEight(instructions_details* details, FILE* input);
-void decodeWhenInstructionNameLengthEqualsFive(int8_t first_byte, instructions_details* details, FILE* input);
-void decodeWhenInstructionNameLengthEqualsThree(int8_t first_byte, instructions_details* details);
-void decodeWhenInstructionNameLengthEqualsTwo(int8_t first_byte, instructions_details* details);
-void decodeWhenInstructionNameLengthEqualsSix(int8_t first_byte, instructions_details* details);
+instructions_details* decodeInstructionArguments(int8_t first_byte, FILE* input, FILE* output);
+void decodeWhenInstructionNameLengthEqualsEight(int8_t first_byte, instructions_details* details, FILE* input, FILE* output);
+void decodeWhenInstructionNameLengthEqualsFive(int8_t first_byte, instructions_details* details, FILE* input, FILE* output);
+void decodeWhenInstructionNameLengthEqualsThree(int8_t first_byte, instructions_details* details, FILE* output);
+void decodeWhenInstructionNameLengthEqualsTwo(int8_t first_byte, instructions_details* details, FILE* output);
+void decodeWhenInstructionNameLengthEqualsSix(int8_t first_byte, instructions_details* details, FILE* output);
