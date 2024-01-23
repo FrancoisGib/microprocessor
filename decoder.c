@@ -97,7 +97,6 @@ int8_t getVariablePartLength(int8_t bitmask) {
 int8_t decodeOpcode(int8_t opcode) {
     char* correspondingInstruction = "Unknown";
     int8_t variablePart = 0;
-
     for (int i = 0; i < NUM_INSTRUCTIONS; ++i) {
         if ((instructionSet[i].opcode & instructionSet[i].mask) == (opcode & instructionSet[i].mask)) {
             int variablePartLength = getVariablePartLength(instructionSet[i].mask);

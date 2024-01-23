@@ -3,6 +3,7 @@
 
 #define NUM_INSTRUCTIONS 17
 
+
 typedef struct {
     int8_t opcode;
     int8_t mask;

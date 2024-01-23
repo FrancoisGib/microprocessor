@@ -90,14 +90,6 @@ void subALU() {
     microprocessor.ALUcom = (microprocessor.X - microprocessor.Y);
 }
 
-void multALU() {
-    microprocessor.ALUcom = (microprocessor.X * microprocessor.Y);
-}
-
-void divALU() {
-    microprocessor.ALUcom = (microprocessor.X / microprocessor.Y);
-}
-
 void incALU() {
     microprocessor.ALUcom = (microprocessor.X + 1);
 }
@@ -112,6 +104,10 @@ void RepX() {
 
 void RepY() {
     microprocessor.ALUcom = microprocessor.Y;
+}
+
+void andALU() {
+    microprocessor.ALUcom = (microprocessor.X & microprocessor.Y);
 }
 
 
@@ -132,11 +128,11 @@ void writeSignal() {
     microprocessor.ram[microprocessor.AL] = microprocessor.DL;
 }
 
-void readInstruction() {
+void readNextByte() {
     PCout(); ALin(); readSignal();
-    DLout(); IRin(); 
+    AAout(), PCin();
+    AAout(); ALin(); DLout(); IRin();
 }
-
 
 
 microprocessor_t* getMicroProcessor() {

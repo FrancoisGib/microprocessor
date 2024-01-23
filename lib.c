@@ -1,5 +1,6 @@
 #include "lib.h"
 
+
 assembly_instructions instructions[17] = {
     {"jmp", 8, 2},
     {"jz", 8, 2},
@@ -31,6 +32,7 @@ void readFile(char* path) {
     char instruction_address[5];
     fread(instruction_address, 4, 1, input);
     process->PC = hex_to_dec(instruction_address);
+    int8_t size = 0;
     while(strcmp(instruction_address, "FFFF") != 0) {
         fseek(input, 3, SEEK_CUR);
         char first_byte[3];
@@ -38,17 +40,21 @@ void readFile(char* path) {
         int8_t decoded_byte = hex_to_dec(first_byte);
         instructions_details* details = decodeInstructionArguments(decoded_byte, input, output);
         assembly_instructions instruction = instructions[details->opcode];
-        for (int i = 0; i < details->nb_bytes; i++)
+        for (int i = 0; i < details->nb_bytes; i++) {
             process->ram[hex_to_dec(instruction_address) + i] = details->bytes[i];
+        }
         free(details->args);
         free(details->bytes);
         free(details);
         fseek(input, 1, SEEK_CUR);
         fread(instruction_address, 4, 1, input);
         fwrite("\n", 1, 1, output);
+        size += details->nb_bytes;
     }
     fclose(input);
     fclose(output);
+    process->ram[size + process->PC] = 0xFF;
+    process->ram[size + process->PC + 1] = 0xFF;
 }
 
 instructions_details* decodeInstructionArguments(int8_t first_byte, FILE* input, FILE* output) {
@@ -149,6 +155,7 @@ void decodeWhenInstructionNameLengthEqualsThree(int8_t first_byte, instructions_
 }
 
 void decodeWhenInstructionNameLengthEqualsTwo(int8_t first_byte, instructions_details* details, FILE* output) {
+    details->nb_bytes = 1;
     details->args[0] = first_byte >> 3 & 0b00000111;
     details->args[1] = first_byte & 0b00000111;
     writeRegisters(details->args[0], details->args[1], output);
@@ -156,6 +163,7 @@ void decodeWhenInstructionNameLengthEqualsTwo(int8_t first_byte, instructions_de
 }
 
 void decodeWhenInstructionNameLengthEqualsSix(int8_t first_byte, instructions_details* details, FILE* output) {
+    details->nb_bytes = 3;
     details->args[0] = first_byte & 0b00000011;
     char buf[8] = "R0, RX ";
     sprintf(buf + 6, "%d", details->args[0]);

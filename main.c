@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "lib.h"
+#include "control_unit.h"
 
 /*int main() {
     microprocessor_t *process = getMicroProcessor();
@@ -27,6 +27,10 @@ int main() {
     microprocessor_t* process = getMicroProcessor();
     char* pathname = "input.txt";
     readFile(pathname);
-    printf("%d ", process->PC);
-    
+    callControlUnit();
+    int i;
+    for (i = 0; i < 1024; i++)
+        printf(" %d ", process->ram[i]);
+    for (i = 0; i < 8; i++)
+        printf("\nR%d = %d", i, process->R[i]);
 }
