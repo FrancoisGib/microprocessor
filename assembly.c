@@ -47,7 +47,7 @@ void LD(int8_t Rn) {
 
 void MV_ARG(int8_t Rn) {
     readSignal(); AAout(); PCin();
-    DLout(); SR(3); Rin();
+    DLout(); SR(Rn); Rin();
 }
 
 void DEC(int8_t Rn) {
