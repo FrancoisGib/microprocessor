@@ -1,12 +1,19 @@
 #include "assembly.h"
 
 void JMP() {
+    printf("dfdsfdsf");
     readSignal();
     DLout(); PCLin(); AAout(); ALin(); readSignal();
     DLout(); PCHin();
 }
 
-void JZ() {}
+void JZ() {
+    Xin(); SR(7); Rout();
+    Yin(); andALU(); ALUout();
+    microprocessor_t* micro = getMicroProcessor();
+    if (micro->dataBus == 0)
+        JMP();
+}
 
 void JC() {}
 

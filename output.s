@@ -1,3 +1,4 @@
-mv R0, $1
-mv R1, $2
-mv R2, $3
+mv R5, R5
+inc R4 
+dec R5 
+jz (0200)

@@ -30,10 +30,10 @@ void readFile(char* path) {
     FILE* input = fopen(path, "r");
     FILE* output = fopen("output.s", "w");
     char instruction_address[5];
-    fread(instruction_address, 4, 1, input);
+    size_t readed_size = fread(instruction_address, 4, 1, input);
     process->PC = hex_to_dec(instruction_address);
-    int8_t size = 0;
-    while(strcmp(instruction_address, "FFFF") != 0) {
+    int8_t size = -4;
+    while(readed_size > 0) {
         fseek(input, 3, SEEK_CUR);
         char first_byte[3];
         fread(first_byte, 2, 1, input);
@@ -47,7 +47,7 @@ void readFile(char* path) {
         free(details->bytes);
         free(details);
         fseek(input, 1, SEEK_CUR);
-        fread(instruction_address, 4, 1, input);
+        readed_size = fread(instruction_address, 4, 1, input);
         fwrite("\n", 1, 1, output);
         size += details->nb_bytes;
     }
