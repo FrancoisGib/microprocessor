@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "control_unit.h"
 
 /*int main() {
@@ -25,7 +24,7 @@
 
 int main() {
     microprocessor_t* process = getMicroProcessor();
-    char* pathname = "input.txt";
+    char* pathname = "test.txt";
     readFile(pathname);
     callControlUnit();
     int i;

@@ -1,9 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <unistd.h>
-#include <string.h>
-#include <math.h>
 #include "lib.h"
 
 typedef struct {
@@ -18,7 +12,6 @@ typedef struct {
 
 typedef void (*assembly_function)(control_unit_decoded_instruction* params);
 
-
 void readFile(char* path);
 control_unit_decoded_instruction* decodeInstruction(int8_t first_byte);
 void decodeEight(control_unit_decoded_instruction* details);
@@ -27,8 +20,6 @@ void decodeThree(control_unit_decoded_instruction* details);
 void decodeTwo(control_unit_decoded_instruction* details);
 void decodeSix(control_unit_decoded_instruction* details);
 control_unit_t* getControlUnit();
-
-
 void control_dec(control_unit_decoded_instruction* params);
 void control_inc(control_unit_decoded_instruction* params);
 void control_add(control_unit_decoded_instruction* params);

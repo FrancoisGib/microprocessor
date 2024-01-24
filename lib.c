@@ -22,7 +22,7 @@ assembly_instructions instructions[17] = {
 };
 
 int16_t hex_to_dec(char *hex) {
-    return (int16_t)strtol(hex, NULL, 16);
+    return strtol(hex, NULL, 16);
 }
 
 void readFile(char* path) {
@@ -115,13 +115,13 @@ void decodeWhenInstructionNameLengthEqualsFive(int8_t first_byte, instructions_d
             fwrite(" (", 2, 1, output);
         }
         for (int i = 1; i < details->nb_args; i++) {
-            fgetc(input);
-            char buf[] = "  ";
+            char c = fgetc(input);
+            char buf[3];
             fread(buf, 2, 1, input);
             if (details->nb_args == 3)
                 fwrite(buf, 2, 1, output);
             else
-                fwrite(buf, 1, 1, output);
+                fwrite(buf + 1, 1, 1, output);
             details->args[i] = hex_to_dec(buf);
             details->bytes[i] = details->args[i];
         }
