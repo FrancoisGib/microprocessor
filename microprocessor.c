@@ -84,10 +84,18 @@ void ALUout() {
 
 void addALU() {
     microprocessor.ALUcom = (microprocessor.X + microprocessor.Y);
+    if (microprocessor.X + microprocessor.Y > 255)
+        microprocessor.F[0] = 1;
+    else
+        microprocessor.F[0] = 0;
 }
 
 void subALU() {
     microprocessor.ALUcom = (microprocessor.X - microprocessor.Y);
+    if (microprocessor.X - microprocessor.Y < 0)
+        microprocessor.F[0] = 1;
+    else
+        microprocessor.F[0] = 0;
 }
 
 void incALU() {
@@ -96,6 +104,11 @@ void incALU() {
 
 void decALU() {
     microprocessor.ALUcom = (microprocessor.X - 1);
+    if (microprocessor.X == 0) {
+        microprocessor.F[1] = 1;
+    }
+    else
+        microprocessor.F[1] = 0;
 }
 
 void RepX() {
@@ -108,6 +121,18 @@ void RepY() {
 
 void andALU() {
     microprocessor.ALUcom = (microprocessor.X & microprocessor.Y);
+    if (microprocessor.ALUcom == 0)
+        microprocessor.F[1] = 1;
+    else
+        microprocessor.F[1] = 0;
+}
+
+void ZFout() {
+    microprocessor.dataBus = microprocessor.F[1];
+}
+
+void CFout() {
+    microprocessor.dataBus = microprocessor.F[0];
 }
 
 

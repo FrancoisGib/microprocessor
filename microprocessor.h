@@ -15,6 +15,7 @@ typedef struct {
     int8_t X;
     int8_t Y;
     ALUop ALUcom;
+    int8_t F[2];
     int8_t ram[1024];
 } microprocessor_t;
 
@@ -52,6 +53,10 @@ void subALU();
 void incALU();
 void decALU();
 void andALU();
+
+// ALU flags out
+void ZFout();
+void CFout();
 
 // IR signals
 void IRin();

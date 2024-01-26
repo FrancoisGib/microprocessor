@@ -1,7 +1,7 @@
 #include "lib.h"
 
 
-assembly_instructions instructions[17] = {
+assembly_instructions instructions[] = {
     {"jmp", 8, 2},
     {"jz", 8, 2},
     {"jc", 8, 2},
@@ -32,7 +32,7 @@ void readFile(char* path) {
     char instruction_address[5];
     size_t readed_size = fread(instruction_address, 4, 1, input);
     process->PC = hex_to_dec(instruction_address);
-    int8_t size = -4;
+    int8_t size = 0;
     while(readed_size > 0) {
         fseek(input, 3, SEEK_CUR);
         char first_byte[3];
@@ -78,6 +78,7 @@ instructions_details* decodeInstructionArguments(int8_t first_byte, FILE* input,
         decodeWhenInstructionNameLengthEqualsTwo(first_byte, details, output);
     else if (instruction.instruction_name_size == 3) 
         decodeWhenInstructionNameLengthEqualsThree(first_byte, details, output);
+    details->bytes[0] = first_byte;
     return details;
 }
 
@@ -91,7 +92,7 @@ void decodeWhenInstructionNameLengthEqualsEight(int8_t first_byte, instructions_
         fread(buf, 2, 1, input);
         fwrite(buf, 2, 1, output);
         details->args[i] = hex_to_dec(buf);
-        details->bytes[i] = details->args[i];
+        details->bytes[i + 1] = details->args[i];
     }
     fwrite(")", 1, 1, output);
 }
@@ -132,7 +133,6 @@ void decodeWhenInstructionNameLengthEqualsFive(int8_t first_byte, instructions_d
         details->nb_bytes = 1;
         details->bytes = (int8_t*)malloc(8);
     }
-    details->bytes[0] = first_byte;
 }
 
 void writeRegisters(int8_t first_arg, int8_t second_arg, FILE* output) {
@@ -141,17 +141,12 @@ void writeRegisters(int8_t first_arg, int8_t second_arg, FILE* output) {
     fwrite(buf, 6, 1, output);
 }
 
-void mallocAndWriteFirstByte(int8_t first_byte, instructions_details* details) {
-    details->bytes = (int8_t*)malloc(8);
-    details->bytes[0] = first_byte;
-}
-
 void decodeWhenInstructionNameLengthEqualsThree(int8_t first_byte, instructions_details* details, FILE* output) {
     details->args[0] = first_byte >> 3 & 0b00000011;
     details->args[1] = first_byte & 0b00000111;
     details->nb_bytes = 1;
     writeRegisters(details->args[0], details->args[1], output);
-    mallocAndWriteFirstByte(first_byte, details);
+    details->bytes = (int8_t*)malloc(8);
 }
 
 void decodeWhenInstructionNameLengthEqualsTwo(int8_t first_byte, instructions_details* details, FILE* output) {
@@ -159,7 +154,7 @@ void decodeWhenInstructionNameLengthEqualsTwo(int8_t first_byte, instructions_de
     details->args[0] = first_byte >> 3 & 0b00000111;
     details->args[1] = first_byte & 0b00000111;
     writeRegisters(details->args[0], details->args[1], output);
-    mallocAndWriteFirstByte(first_byte, details);
+    details->bytes = (int8_t*)malloc(8);
 }
 
 void decodeWhenInstructionNameLengthEqualsSix(int8_t first_byte, instructions_details* details, FILE* output) {
@@ -168,5 +163,5 @@ void decodeWhenInstructionNameLengthEqualsSix(int8_t first_byte, instructions_de
     char buf[8] = "R0, RX ";
     sprintf(buf + 6, "%d", details->args[0]);
     fwrite(buf, 7, 1, output);
-    mallocAndWriteFirstByte(first_byte, details);
+    details->bytes = (int8_t*)malloc(8);
 }

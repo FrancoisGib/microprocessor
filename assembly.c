@@ -1,21 +1,24 @@
 #include "assembly.h"
 
 void JMP() {
-    printf("dfdsfdsf");
-    readSignal();
+    PCout(); ALin(); readSignal();
     DLout(); PCLin(); AAout(); ALin(); readSignal();
     DLout(); PCHin();
 }
 
 void JZ() {
-    Xin(); SR(7); Rout();
-    Yin(); andALU(); ALUout();
+    ZFout();
     microprocessor_t* micro = getMicroProcessor();
-    if (micro->dataBus == 0)
+    if (micro->dataBus == 1)
         JMP();
 }
 
-void JC() {}
+void JC() {
+    CFout();
+    microprocessor_t* micro = getMicroProcessor();
+    if (micro->dataBus == 1)
+        JMP();
+}
 
 void JMP_RX0() {
     SR(0); Rout(); PCLin();
@@ -59,7 +62,7 @@ void MV_ARG(int8_t Rn) {
 
 void DEC(int8_t Rn) {
     SR(Rn); Rout(); Xin();
-    decALU(); ALUout(); Rout();
+    decALU(); ALUout(); Rin();
 }
 
 void INC(int8_t Rn) {
@@ -96,3 +99,5 @@ void MV_Rn_Rm(int8_t Rn, int8_t Rm) {
     SR(Rm); Rout();
     SR(Rn); Rin();
 }
+
+void NOP() {}

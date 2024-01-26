@@ -2,15 +2,15 @@
 
 control_unit_t control_unit;
 
-assembly_instructions instructio[17] = {
-    {"jmp", 8, 2},
-    {"jz", 8, 2},
-    {"jc", 8, 2},
+assembly_instructions instructio[] = {
+    {"jmp", 8, 0},
+    {"jz", 8, 0},
+    {"jc", 8, 0},
     {"jmp RX0", 8, 0},
     {"st", 6, 1},
     {"ld", 6, 1},
-    {"st", 5, 3},
-    {"ld", 5, 3},
+    {"st", 5, 1},
+    {"ld", 5, 1},
     {"mv", 5, 2},
     {"dec", 5, 1},
     {"inc", 5, 1},
@@ -79,9 +79,9 @@ control_unit_t* getControlUnit() {
 
 
 Instruction iSET[NUM_INSTRUCTIONS] = {
-    {0b01110000,0b11111111,jmp_hhll, 3},
-    {0b01110001,0b11111111,jz_hhll, 3},
-    {0b01110010,0b11111111,jc_hhll, 3},
+    {0b01110000,0b11111111,jmp_hhll, 1},
+    {0b01110001,0b11111111,jz_hhll, 1},
+    {0b01110010,0b11111111,jc_hhll, 1},
     {0b01110011,0b11111111,jmp_rx0, 1},
     {0b01111011,0b11111100,st_r0_rxn, 1},
     {0b01111111,0b11111100,ld_r0_rxn, 1},

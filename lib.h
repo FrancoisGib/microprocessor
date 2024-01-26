@@ -21,6 +21,7 @@ typedef struct {
 
 int16_t hex_to_dec(char* str);
 void readFile(char* path);
+void writeRegisters(int8_t first_arg, int8_t second_arg, FILE* output);
 instructions_details* decodeInstructionArguments(int8_t first_byte, FILE* input, FILE* output);
 void decodeWhenInstructionNameLengthEqualsEight(int8_t first_byte, instructions_details* details, FILE* input, FILE* output);
 void decodeWhenInstructionNameLengthEqualsFive(int8_t first_byte, instructions_details* details, FILE* input, FILE* output);

@@ -24,16 +24,18 @@
 
 int main() {
     microprocessor_t* process = getMicroProcessor();
-    char* pathname = "add5.txt";
-    memset(process->ram, 0, 1024);
+    char* pathname = "prog.txt";
     int i;
+    for (i = 0; i < 8; i++)
+        process->R[i] = 0;
+    memset(process->ram, 0, 1024);
+    process->ram[0x0100] = 2;
+    process->ram[0x0101] = 8;
     readFile(pathname);
-    for (i = 0; i < 1024; i++)
-        printf(" %d ", process->ram[i]);
-    printf(" %d \n\n", process->ram[i]);
     callControlUnit();
     for (i = 0; i < 1024; i++)
         printf(" %d ", process->ram[i]);
     for (i = 0; i < 8; i++)
         printf("\nR%d = %d", i, process->R[i]);
+    printf("\nResultat : %d\n", process->ram[0x0102]);
 }

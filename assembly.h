@@ -1,5 +1,6 @@
 #include "microprocessor.h"
 
+void NOP();
 void JMP();
 void JZ();
 void JC();
