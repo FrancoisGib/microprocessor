@@ -40,9 +40,8 @@ void readFile(char* path) {
         int8_t decoded_byte = hex_to_dec(first_byte);
         instructions_details* details = decodeInstructionArguments(decoded_byte, input, output);
         assembly_instructions instruction = instructions[details->opcode];
-        for (int i = 0; i < details->nb_bytes; i++) {
+        for (int i = 0; i < details->nb_bytes; i++)
             process->ram[hex_to_dec(instruction_address) + i] = details->bytes[i];
-        }
         free(details->args);
         free(details->bytes);
         free(details);

@@ -111,6 +111,10 @@ void decALU() {
         microprocessor.F[1] = 0;
 }
 
+void notALU() {
+    microprocessor.ALUcom = (~microprocessor.X);
+}
+
 void RepX() {
     microprocessor.ALUcom = microprocessor.X;
 }
@@ -126,15 +130,6 @@ void andALU() {
     else
         microprocessor.F[1] = 0;
 }
-
-void ZFout() {
-    microprocessor.dataBus = microprocessor.F[1];
-}
-
-void CFout() {
-    microprocessor.dataBus = microprocessor.F[0];
-}
-
 
 // IR signals
 

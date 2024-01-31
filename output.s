@@ -1,2 +1,1 @@
-ld R3 
-ld R3 
+mv R0, $F

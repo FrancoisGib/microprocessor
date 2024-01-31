@@ -1,23 +1,12 @@
 #include "assembly.h"
 
 void JMP() {
+    microprocessor_t *micro = getMicroProcessor();
+    printf("\nPC before: 0x%03x", micro->PC);
     PCout(); ALin(); readSignal();
-    DLout(); PCLin(); AAout(); ALin(); readSignal();
-    DLout(); PCHin();
-}
-
-void JZ() {
-    ZFout();
-    microprocessor_t* micro = getMicroProcessor();
-    if (micro->dataBus == 1)
-        JMP();
-}
-
-void JC() {
-    CFout();
-    microprocessor_t* micro = getMicroProcessor();
-    if (micro->dataBus == 1)
-        JMP();
+    DLout(); PCHin(); AAout(); ALin(); readSignal();
+    DLout(); PCLin();
+    printf("\nPC after: 0x%03x", micro->PC);
 }
 
 void JMP_RX0() {
@@ -25,14 +14,14 @@ void JMP_RX0() {
     SR(1); Rout(); PCHin();
 }
 
-void ST_R0_RXn(int8_t Rn, int8_t Rm) {
-    SR(Rn); Rout(); ALLin();
+void ST_R0_RXn(int8_t Rm) {
+    SR(0); Rout(); ALLin();
     SR(Rm); Rout(); ALHin();
     SR(0); Rout(); DLin(); writeSignal();
 }
 
-void LD_R0_RXn(int8_t Rn, int8_t Rm) {
-    SR(Rn); Rout(); ALLin();
+void LD_R0_RXn(int8_t Rm) {
+    SR(0); Rout(); ALLin();
     SR(Rm); Rout(); ALHin(); readSignal();
     SR(0); DLout(); Rin();
 }
@@ -88,6 +77,11 @@ void AND(int8_t Rn, int8_t Rm) {
     andALU(); ALUout(); SR(Rn); Rin();
 }
 
+void NOT(int8_t Rn) {
+    SR(Rn); Rout(); Xin();
+    notALU(); ALUout(); SR(Rn); Rin();
+}
+
 void SWP(int8_t Rn, int8_t Rm) {
     SR(Rn); Rout(); Xin();
     SR(Rm); Rout(); Yin();
@@ -100,4 +94,8 @@ void MV_Rn_Rm(int8_t Rn, int8_t Rm) {
     SR(Rn); Rin();
 }
 
-void NOP() {}
+void NOP() {
+    printf("\nnop");
+    PCout(); ALin();
+    AAout(); PCin();
+}

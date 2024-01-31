@@ -53,10 +53,7 @@ void subALU();
 void incALU();
 void decALU();
 void andALU();
-
-// ALU flags out
-void ZFout();
-void CFout();
+void notALU();
 
 // IR signals
 void IRin();

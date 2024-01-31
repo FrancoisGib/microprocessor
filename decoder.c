@@ -1,6 +1,6 @@
 #include "decoder.h"
 
-Instruction instructionSet[NUM_INSTRUCTIONS] = {
+Instruction instructionSet[] = {
     {0b01110000,0b11111111,jmp_hhll, 3},
     {0b01110001,0b11111111,jz_hhll, 3},
     {0b01110010,0b11111111,jc_hhll, 3},
@@ -20,70 +20,73 @@ Instruction instructionSet[NUM_INSTRUCTIONS] = {
     {0b00111111,0b11000000,mv_Rn_Rm, 1}
 };
 
-int8_t dec_Rn(int8_t variablePart){
+void nop(int8_t variablePart){
+    printf("NOP\n");
+}
+
+void dec_Rn(int8_t variablePart){
     printf("DEC R%d\n",variablePart);
 }
-int8_t inc_Rn(int8_t variablePart){
+void inc_Rn(int8_t variablePart){
     printf("INC R%d\n",variablePart);
 }
-int8_t not_Rn(int8_t variablePart){
+void not_Rn(int8_t variablePart){
     printf("NOT R%d\n",variablePart);
 }
-int8_t add_Rn_Rm(int8_t variablePart){
+void add_Rn_Rm(int8_t variablePart){
     int8_t Rn = (variablePart & 0b00011000) >> 3;
     int8_t Rm = variablePart & 0b00000111;
     printf("ADD R%d, R%d\n",Rn,Rm);
 }
-int8_t sub_Rn_Rm(int8_t variablePart){
+void sub_Rn_Rm(int8_t variablePart){
     int8_t Rn = (variablePart & 0b00011000) >> 3;
     int8_t Rm = variablePart & 0b00000111;
     printf("SUB R%d, R%d\n",Rn,Rm);
 }
-int8_t and_Rn_Rm(int8_t variablePart){
+void and_Rn_Rm(int8_t variablePart){
     int8_t Rn = (variablePart & 0b00011000) >> 3;
     int8_t Rm = variablePart & 0b00000111;
     printf("AND R%d, R%d\n",Rn,Rm);
 }
-int8_t swp_Rn_Rm(int8_t variablePart){
+void swp_Rn_Rm(int8_t variablePart){
     int8_t Rn = (variablePart & 0b00011000) >> 3;
     int8_t Rm = variablePart & 0b00000111;
     printf("SWP R%d, R%d\n",Rn,Rm);
 }
-int8_t mv_Rn_Rm(int8_t variablePart){
+void mv_Rn_Rm(int8_t variablePart){
     int8_t Rn = (variablePart & 0b00111000) >> 3;
     int8_t Rm = variablePart & 0b00000111;
     printf("MV R%d, R%d\n",Rn,Rm);
 }
-int8_t jmp_hhll(int8_t variablePart){
+void jmp_hhll(int8_t variablePart){
     printf("JMP HHLL\n");
 }
-int8_t jz_hhll(int8_t variablePart){
+void jz_hhll(int8_t variablePart){
     printf("JZ HHLL\n");
 }
-int8_t jc_hhll(int8_t variablePart){
+void jc_hhll(int8_t variablePart){
     printf("JC HHLL\n");
 }
-int8_t jmp_rx0(int8_t variablePart){
+void jmp_rx0(int8_t variablePart){
     printf("JMP RX0\n");
 }
-int8_t st_r0_rxn(int8_t variablePart){
+void st_r0_rxn(int8_t variablePart){
     int8_t RXn = (variablePart & 0b00000011);
     printf("ST R0, RX%d\n",RXn);
 }
-int8_t ld_r0_rxn(int8_t variablePart){
+void ld_r0_rxn(int8_t variablePart){
     int8_t RXn = (variablePart & 0b00000011);
     printf("LD R0, RX%d\n",RXn);
 }
-int8_t st_rn_hhll(int8_t variablePart){
+void st_rn_hhll(int8_t variablePart){
     printf("ST R%d, HHLL\n",variablePart);
 }
-int8_t ld_rn_hhll(int8_t variablePart){
+void ld_rn_hhll(int8_t variablePart){
     printf("LD R%d, HHLL\n",variablePart);
 }
-int8_t mv_rn_arg(int8_t variablePart){
+void mv_rn_arg(int8_t variablePart){
     printf("mv R%d, arg#\n",variablePart);
 }
-
 
 int8_t getVariablePartLength(int8_t bitmask) {
     int8_t length = 0;
