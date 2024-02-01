@@ -149,9 +149,14 @@ void writeSignal() {
 }
 
 void readNextByte() {
+    printf("sdfsdf%02x", microprocessor.IR);
     PCout(); ALin(); readSignal();
     AAout(), PCin();
-    AAout(); ALin(); DLout(); IRin();
+    
+    DLout(); IRin();
+        printf("\nfsdfbgsdyfsdbfs");
+
+    printf("%02x", microprocessor.IR);
 }
 
 

@@ -3,8 +3,8 @@
 void NOP();
 void JMP();
 void JMP_RX0();
-void ST_R0_RXn(int8_t Rm);
-void LD_R0_RXn(int8_t Rm);
+void ST_R0_RXn(int8_t n);
+void LD_R0_RXn(int8_t n);
 void ST(int8_t Rn);
 void LD(int8_t Rn);
 void MV_ARG(int8_t Rn);

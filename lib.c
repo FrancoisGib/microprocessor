@@ -157,7 +157,7 @@ void decodeWhenInstructionNameLengthEqualsTwo(int8_t first_byte, instructions_de
 }
 
 void decodeWhenInstructionNameLengthEqualsSix(int8_t first_byte, instructions_details* details, FILE* output) {
-    details->nb_bytes = 3;
+    details->nb_bytes = 1;
     details->args[0] = first_byte & 0b00000011;
     char buf[8] = "R0, RX ";
     sprintf(buf + 6, "%d", details->args[0]);

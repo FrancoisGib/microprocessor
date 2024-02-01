@@ -7,8 +7,8 @@ assembly_instructions instructio[] = {
     {"jz", 8, 0},
     {"jc", 8, 0},
     {"jmp RX0", 8, 0},
-    {"st", 6, 1},
-    {"ld", 6, 1},
+    {"st R0 RXn", 6, 1},
+    {"ld R0 RXn", 6, 1},
     {"st", 5, 1},
     {"ld", 5, 1},
     {"mv", 5, 2},
@@ -23,14 +23,19 @@ assembly_instructions instructio[] = {
 };
 
 control_unit_decoded_instruction* decodeInstruction(int8_t first_byte) {
+        printf("fsdfsdfsf");
+
     int8_t opcode = decodeOpcode(first_byte);
     //printf("\nfirst byte : 0x%03x", first_byte);
+        printf("fsdfsdfsf");
+
     control_unit_decoded_instruction* details = (control_unit_decoded_instruction*)malloc(sizeof(control_unit_decoded_instruction));
     details->opcode = opcode;
     assembly_instructions instruction = instructio[opcode];
     if (instruction.nb_args > 0) {
         details->nb_args = instruction.nb_args;
-        details->args = (int8_t*)malloc(sizeof(int8_t) * details->nb_args);
+        if (details->nb_args > 0)
+            details->args = (int8_t*)malloc(sizeof(int8_t) * details->nb_args);
     }
     details->args[0] = control_unit.bytes[0];
     if (instruction.instruction_name_size == 8)
@@ -71,6 +76,7 @@ void decodeTwo(control_unit_decoded_instruction* details) {
 }
 
 void decodeSix(control_unit_decoded_instruction* details) {
+    printf("fsdfsdfsf");
     details->args[0] = control_unit.bytes[0] & 0b00000011;
 }
 
@@ -102,26 +108,32 @@ assembly_function functions[] = {control_jmp_hhll, control_jz, control_jc, contr
 
 void callControlUnit() {
     microprocessor_t* microprocessor = getMicroProcessor();
-    printf("0x%03x\n", microprocessor->PC);
+    //printf("0x%03x\n", microprocessor->PC);
     int i = 0;
     while (microprocessor->IR != -1) {
-        printf("\nPC : 0x%03x", microprocessor->PC);
         readNextByte();
+        printf("\nIR : 0x%03x", microprocessor->IR);
         control_unit.bytes[i] = microprocessor->IR;
         i++;
         int8_t first_byte = control_unit.bytes[0];
         int8_t code = decodeOpcode(first_byte);
         int8_t instruction_size = iSET[code].size;
+        printf("\nPC : %d", i);
         if (instruction_size == i) {
+            printf("ok");
             printf("\nbyte : 0x%03x, 0x%03x, 0x%03x, instruc : %s", control_unit.bytes[0], control_unit.bytes[1], control_unit.bytes[2], instructio[code].desc);
             control_unit_decoded_instruction* instruction = decodeInstruction(control_unit.bytes[0]);
             launch_assembly_instruction(instruction);
+            if (instruction->nb_args > 0)
+                free(instruction->args);
             for (i = 0; i < 3; i++)
                 control_unit.bytes[i] = 0;
             i = 0;
         }
+        
     }
 }
+
 
 void control_dec(control_unit_decoded_instruction* params) {
     DEC(params->args[0]);
@@ -161,6 +173,7 @@ void control_jz(control_unit_decoded_instruction* params) {
         JMP();
     else {
         NOP();
+        NOP();
     }
 }
 
@@ -170,6 +183,7 @@ void control_jc(control_unit_decoded_instruction* params) {
         JMP();
     }
     else {
+        NOP();
         NOP();
     }
 }

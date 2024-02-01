@@ -14,16 +14,16 @@ void JMP_RX0() {
     SR(1); Rout(); PCHin();
 }
 
-void ST_R0_RXn(int8_t Rm) {
-    SR(0); Rout(); ALLin();
-    SR(Rm); Rout(); ALHin();
+void ST_R0_RXn(int8_t n) {
+    SR(n); Rout(); ALLin();
+    SR(n+1); Rout(); ALHin();
     SR(0); Rout(); DLin(); writeSignal();
 }
 
-void LD_R0_RXn(int8_t Rm) {
-    SR(0); Rout(); ALLin();
-    SR(Rm); Rout(); ALHin(); readSignal();
-    SR(0); DLout(); Rin();
+void LD_R0_RXn(int8_t n) {
+    SR(n); Rout(); ALLin();
+    SR(0); Rout(); ALHin(); readSignal();
+    SR(n); DLout(); Rin();
 }
 
 void ST(int8_t Rn) {
@@ -95,7 +95,6 @@ void MV_Rn_Rm(int8_t Rn, int8_t Rm) {
 }
 
 void NOP() {
-    printf("\nnop");
     PCout(); ALin();
     AAout(); PCin();
 }
