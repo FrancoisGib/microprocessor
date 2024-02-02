@@ -7,10 +7,6 @@ int main(int argc, char *argv[]) {
     }
     char* pathname = argv[1];
     microprocessor_t* process = getMicroProcessor();
-    process->ram[0x0001] = 64;
-    process->ram[0x0101] = 65;
-    process->ram[0x0201] = 66;
-    process->ram[0x0301] = 67;
     int i;
     for (i = 0; i < 8; i++)
         process->R[i] = 0;
@@ -22,6 +18,6 @@ int main(int argc, char *argv[]) {
     printf("\n");
     for (i = 0; i < 8; i++)
         printf("\nR%d = %d", i, process->R[i]);
-    printf("\n");
+    printf("\n%d", process->ram[0x0101]);
     return 0;
 }

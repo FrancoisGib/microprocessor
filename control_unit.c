@@ -23,20 +23,12 @@ assembly_instructions instructio[] = {
 };
 
 control_unit_decoded_instruction* decodeInstruction(int8_t first_byte) {
-        printf("fsdfsdfsf");
-
     int8_t opcode = decodeOpcode(first_byte);
-    //printf("\nfirst byte : 0x%03x", first_byte);
-        printf("fsdfsdfsf");
-
     control_unit_decoded_instruction* details = (control_unit_decoded_instruction*)malloc(sizeof(control_unit_decoded_instruction));
     details->opcode = opcode;
     assembly_instructions instruction = instructio[opcode];
-    if (instruction.nb_args > 0) {
-        details->nb_args = instruction.nb_args;
-        if (details->nb_args > 0)
-            details->args = (int8_t*)malloc(sizeof(int8_t) * details->nb_args);
-    }
+    details->nb_args = instruction.nb_args;
+    details->args = (int8_t*)malloc(sizeof(int8_t) * details->nb_args);
     details->args[0] = control_unit.bytes[0];
     if (instruction.instruction_name_size == 8)
         decodeEight(details);
@@ -76,7 +68,6 @@ void decodeTwo(control_unit_decoded_instruction* details) {
 }
 
 void decodeSix(control_unit_decoded_instruction* details) {
-    printf("fsdfsdfsf");
     details->args[0] = control_unit.bytes[0] & 0b00000011;
 }
 
@@ -93,7 +84,7 @@ Instruction iSET[] = {
     {0b01111111,0b11111100,ld_r0_rxn, 1},
     {0b01000111,0b11111000,st_rn_hhll, 1},
     {0b01001111,0b11111000,ld_rn_hhll, 1},
-    {0b01010111,0b11111000,mv_rn_arg, 1},
+    {0b01010111,0b11111000,mv_rn_arg, 2},
     {0b01011111,0b11111000,dec_Rn, 1}, 
     {0b01100111,0b11111000,inc_Rn, 1},
     {0b01101111,0b11111000,not_Rn, 1},
@@ -108,24 +99,21 @@ assembly_function functions[] = {control_jmp_hhll, control_jz, control_jc, contr
 
 void callControlUnit() {
     microprocessor_t* microprocessor = getMicroProcessor();
-    //printf("0x%03x\n", microprocessor->PC);
     int i = 0;
+    int cpt = 0;
     while (microprocessor->IR != -1) {
         readNextByte();
-        printf("\nIR : 0x%03x", microprocessor->IR);
+        cpt++;
         control_unit.bytes[i] = microprocessor->IR;
         i++;
         int8_t first_byte = control_unit.bytes[0];
         int8_t code = decodeOpcode(first_byte);
         int8_t instruction_size = iSET[code].size;
-        printf("\nPC : %d", i);
         if (instruction_size == i) {
-            printf("ok");
-            printf("\nbyte : 0x%03x, 0x%03x, 0x%03x, instruc : %s", control_unit.bytes[0], control_unit.bytes[1], control_unit.bytes[2], instructio[code].desc);
             control_unit_decoded_instruction* instruction = decodeInstruction(control_unit.bytes[0]);
             launch_assembly_instruction(instruction);
             if (instruction->nb_args > 0)
-                free(instruction->args);
+                 free(instruction->args);
             for (i = 0; i < 3; i++)
                 control_unit.bytes[i] = 0;
             i = 0;
@@ -193,11 +181,11 @@ void control_jmp_rx0(control_unit_decoded_instruction* params) {
 }
 
 void control_st_r0_rxn(control_unit_decoded_instruction* params) {
-    ST_R0_RXn(params->args[0] * 2 + 1);
+    ST_R0_RXn(params->args[0] * 2);
 }
 
 void control_ld_r0_rxn(control_unit_decoded_instruction* params) {
-    LD_R0_RXn(params->args[0] * 2 + 1);
+    LD_R0_RXn(params->args[0] * 2);
 }
 
 void control_st_rn_hhll(control_unit_decoded_instruction* params) {

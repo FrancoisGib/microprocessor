@@ -2,12 +2,13 @@
 
 void JMP() {
     microprocessor_t *micro = getMicroProcessor();
-    printf("\nPC before: 0x%03x", micro->PC);
+    printf("\nPC before: 0x%04x", micro->PC);
     PCout(); ALin(); readSignal();
     DLout(); PCHin(); AAout(); ALin(); readSignal();
     DLout(); PCLin();
-    printf("\nPC after: 0x%03x", micro->PC);
+    printf("\nPC after: 0x%04x", micro->PC);
 }
+
 
 void JMP_RX0() {
     SR(0); Rout(); PCLin();
@@ -16,31 +17,31 @@ void JMP_RX0() {
 
 void ST_R0_RXn(int8_t n) {
     SR(n); Rout(); ALLin();
-    SR(n+1); Rout(); ALHin();
+    SR(n + 1); Rout(); ALHin();
     SR(0); Rout(); DLin(); writeSignal();
 }
 
 void LD_R0_RXn(int8_t n) {
     SR(n); Rout(); ALLin();
-    SR(0); Rout(); ALHin(); readSignal();
-    SR(n); DLout(); Rin();
+    SR(n + 1); Rout(); ALHin(); readSignal();
+    SR(0); DLout(); Rin();
 }
 
 void ST(int8_t Rn) {
-    readSignal();
+    PCout(); ALin(); readSignal();
     DLout(); Xin(); AAout(); ALin(); readSignal();
     AAout(); PCin();
-    DLout(); ALHin();
-    RepX(); ALUout(); ALLin();
-    SR(Rn); Rout(); writeSignal();
+    DLout(); ALLin();
+    RepX(); ALUout(); ALHin();
+    SR(Rn); Rout(); DLin(); writeSignal();
 }
 
 void LD(int8_t Rn) {
-    readSignal();
+    PCout(); ALin(); readSignal();
     DLout(); Xin(); AAout(); ALin(); readSignal();
     AAout(); PCin();
-    DLout(); ALHin();
-    RepX(); ALUout(); ALLin(); readSignal();
+    DLout(); ALLin();
+    RepX(); ALUout(); ALHin(); readSignal();
     DLout(); SR(Rn); Rin();
 }
 
