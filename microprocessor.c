@@ -1,6 +1,7 @@
 #include "microprocessor.h"
 #include"decoder.h"
 #include<stdio.h>
+#include<math.h>
 static microprocessor_t microprocessor;
 
 // R registers signals
@@ -141,6 +142,14 @@ void write() {
     microprocessor.ram[microprocessor.AL] = microprocessor.DL;
 }
 
+int chechForCarry(){
+    int8_t num = max(microprocessor.X,microprocessor.Y);
+    for (int i = 0; i < 8; i++)
+    {
+        if(num >= minimalBit[i] && )
+    }
+    
+}
 void updateFlags(int8_t result){
     if(result == 0){
         microprocessor.zeroFlag = 1;

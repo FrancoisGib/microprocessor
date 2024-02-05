@@ -21,6 +21,17 @@ Instruction instructionSet[NUM_INSTRUCTIONS] = {
     {0b00111111,0b11000000,mv_Rn_Rm}
 };
 
+MinimalBit minimalBit[8] = {
+    {0,1,1},
+    {2,3,2},
+    {4,7,3},
+    {8,15,4},
+    {16,31,5},
+    {32,63,6},
+    {64,127,7},
+    {128,255,8}
+};
+
 int8_t dec_Rn(int8_t variablePart){
     printf("DEC R%d\n",variablePart);
 }

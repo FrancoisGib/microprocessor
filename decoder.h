@@ -3,11 +3,18 @@
 
 #define NUM_INSTRUCTIONS 17
 
+typedef struct{
+    int8_t start;
+    int8_t end;
+    int8_t nb_Bit;
+} MinimalBit;
+
 typedef struct {
     int8_t opcode;
     int8_t mask;
     int8_t(*operation)(int8_t variablePart);
 } Instruction;
+
 
 int8_t dec_Rn(int8_t variablePart);
 int8_t inc_Rn(int8_t variablePart);
