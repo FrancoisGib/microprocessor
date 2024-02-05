@@ -1,17 +1,11 @@
 #include "assembly.h"
-#include "decoder.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <unistd.h>
 #include <string.h>
 
-typedef struct
-{
-    char* desc;
-    int8_t size;
-} assembly_instructions;
+void fillMemory(uint8_t* RAM,int8_t* hasInstruction, size_t size);
 
+void displayMemory(uint8_t* RAM,int8_t* hasInstruction,size_t size);
 
-int8_t hex_to_dec(char* str);
-void readFile();
+void fillWithZero(int8_t* hasInstruction, size_t size);

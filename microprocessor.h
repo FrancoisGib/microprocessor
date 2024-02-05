@@ -1,3 +1,7 @@
+#ifndef MICROPROCESSOR_H
+#define MICROPROCESSOR_H
+
+#define RAMSIZE 1024
 #include <stdint.h>
 
 typedef int8_t (*ALUop)(int8_t param);
@@ -13,10 +17,19 @@ typedef struct {
     int8_t IR;
     int8_t X;
     int8_t Y;
+    int8_t zeroFlag;
+    int8_t signFlag;
+    int8_t carryFlag;
     ALUop ALUcom;
-    int8_t ram[1024];
+    uint8_t ram[RAMSIZE];
+    int8_t hasInstruction[RAMSIZE];
     int8_t controlUnit[3];
 } microprocessor_t;
+
+
+
+// Function to get the singleton instance
+microprocessor_t* getMicroProcessor();
 
 // R registers signals
 void SR(int i);
@@ -61,5 +74,7 @@ void IRin();
 void read();
 void write();
 
+//Flags Update
+void updateFlags(int8_t result);
 
-microprocessor_t* getMicroProcessor();
+#endif // MICROPROCESSOR_H

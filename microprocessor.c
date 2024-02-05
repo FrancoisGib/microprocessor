@@ -1,7 +1,7 @@
 #include "microprocessor.h"
 #include"decoder.h"
-
-microprocessor_t microprocessor;
+#include<stdio.h>
+static microprocessor_t microprocessor;
 
 // R registers signals
 
@@ -28,11 +28,12 @@ void PCout() {
 }
 
 void PCHin() {
-    *((int8_t*)&microprocessor.PC) = microprocessor.dataBus;
+    microprocessor.PC = 0;
+    microprocessor.PC |= (int16_t)(microprocessor.dataBus << 8);
 }
 
 void PCLin() {
-    *((int8_t*)&microprocessor.PC + 1) = microprocessor.dataBus;
+    microprocessor.PC |= (int16_t)(microprocessor.dataBus);
 }
 
 
@@ -54,15 +55,23 @@ void ALin() {
 }
 
 void ALHin() {
-    *((int8_t*)&microprocessor.AL) = microprocessor.dataBus;
+    // printf("High Bit %02X\n",microprocessor.dataBus);
+    microprocessor.AL = 0;
+    // printf("AL Before H %hx\n",microprocessor.AL);
+    microprocessor.AL |= (int16_t)(microprocessor.dataBus << 8);
+    // printf("AL After H %d\n",microprocessor.AL);
 }
 
 void ALLin() {
-    *((int8_t*)&microprocessor.AL + 1) = microprocessor.dataBus;
+    // printf("Low Bit %02X\n",microprocessor.dataBus);
+    // printf("AL Before H %hx\n",microprocessor.AL);
+    microprocessor.AL |= (int16_t)(microprocessor.dataBus);
+    // printf("AL After L %d\n",microprocessor.AL);
+
 }
 
 void AAout() {
-    microprocessor.addressBus = microprocessor.AL + 1;
+    microprocessor.addressBus = microprocessor.addressBus+1;
 }
 
 
@@ -132,6 +141,23 @@ void write() {
     microprocessor.ram[microprocessor.AL] = microprocessor.DL;
 }
 
+void updateFlags(int8_t result){
+    if(result == 0){
+        microprocessor.zeroFlag = 1;
+        microprocessor.signFlag = 0;
+        microprocessor.carryFlag = 0;
+    }
+    else if(result < 0){
+       microprocessor.signFlag = 1;
+       microprocessor.zeroFlag = 0;
+       microprocessor.carryFlag = 0;
+    }
+    else if (result > 255)
+    {
+        return;
+    }
+    
+}
 microprocessor_t *getMicroProcessor(){
     return &microprocessor;
 }

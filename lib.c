@@ -1,60 +1,62 @@
+#include <stdio.h>
+#include <inttypes.h>
 #include "lib.h"
 
-assembly_instructions instructions[17] = {
-    {"jmp", 3},
-    {"jz", 3},
-    {"jc", 3},
-    {"jmp", 1},
-    {"st", 1},
-    {"ld", 1},
-    {"st", 3},
-    {"ld", 2},
-    {"mv", 1},
-    {"dec", 1},
-    {"inc", 1},
-    {"not", 1},
-    {"add", 2},
-    {"sub", 1},
-    {"swp", 1},
-    {"mv", 1}
-}
+void fillMemory(uint8_t* RAM,int8_t* hasInstruction, size_t size){
+    FILE *input = fopen("input.txt", "r");
+    FILE *output = fopen("output.s","w");
+    fillWithZero(RAM,size);
+    if (input == NULL) {
+        perror("Error opening file");
+    }
 
-int8_t hex_to_dec(char* str) {
-    return strtol(str, NULL, 16);
-}
-
-void readFile(char* path) {
-    FILE* file = fopen(path, 'r');
-    FILE* output = fopen("output.txt", 'r');
-    char instruction[4];
-    while (instruction != "FFFF") {
-        fread(instruction, 4, 1, file);
-        int8_t instruction_first_byte = hex_to_dec(instruction);
-        int8_t opcode = decodeOpcode(instruction_first_byte);
-        int8_t size = instructions[opcode].size;
-        fread(NULL, 1, 3, file);
-        int8_t arguments[size];
-        char buf[2];
-        for (int i = 0; i < size; i++) {
-            fread(buf, 2, 1, file);
-            arguments[i] = hex_to_dec(buf);
+    char line[256];
+    while (fgets(line, sizeof(line), input) != NULL) {
+        int16_t value1;
+        int8_t value2, value3, value4;
+        if (strstr(line, "FFFF") != NULL) {
+            break;
         }
-        outputInstruction(opcode, arguments, file);
+        //pattern matching
+        int result = sscanf(line, "%hx: %hhx %hhx %hhx", &value1, &value2, &value3, &value4);
+        if (result >= 2) {
+            hasInstruction[value1] = 1;
+            RAM[value1] = value2;
+            if (result == 3) {
+                RAM[value1 + 1] = value3;
+                hasInstruction[value1+1] = 1;
+            }
+            if(result == 4){
+                RAM[value1 + 1] = value3;
+                RAM[value1 + 2] = value4;
+                hasInstruction[value1+1] = 1;
+                hasInstruction[value1+2] = 1;
+            }
+        }
     }
+    fclose(input);
 }
 
-void outputInstruction(int8_t opcode, int8_t* arguments, FILE* output) {
-    int8_t size = instructions[opcode].size;
-    char* desc = instructions[opcode].desc;
-    fwrite(desc, strlen(desc), 1, output);
-    arguments[0] = getVariablePart(opcode);
-    for (int i = 1; i < size; i++) {
-        arguments[i] = 
+void fillWithZero(int8_t* hasInstruction, size_t size){
+    for (size_t i = 0; i < size; i++)
+    {
+        hasInstruction[i] = 0;
     }
+    
 }
-
-void main() {
-    microprocessor_t* process = getMicroProcessor();
-    char* pathname = "file";
-    readFile(pathname);
+void displayMemory(uint8_t* RAM,int8_t* hasInstruction,size_t size){
+    printf("Address | Data\n");
+    printf("-----------------\n");
+    for (size_t i = 0; i < size; i++)
+    {
+        if(hasInstruction[i] == 1){
+            printf("[%ld | %02X]  ",i,RAM[i]);
+            if ((i + 1) % 2 == 0) {
+                printf("\n");
+            }
+        }
+        else{
+        }
+    }
+    printf("\n");
 }

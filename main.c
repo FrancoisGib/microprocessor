@@ -1,33 +1,26 @@
 #include <stdio.h>
 #include <stdint.h>
-#include"microprocessor.h"
-#include"decoder.h"
+#include <inttypes.h>
+#include "simulator.h"
+
+int add_with_carry(int8_t a, int8_t b, uint8_t* result) {
+    *result = a + b;
+
+    // Check for carry
+    return (*result > a) && (*result > b);
+}
 
 int main() {
-    microprocessor_t *proc = getMicroProcessor();
-    proc->ram[0] = 0b10011010;
-    proc->ram[1] = 0b10111010;
-    proc->ram[2] = 0b11111010;
-    proc->R[3] = 69;
-    proc->R[2] = 1;
-    proc->addressBus = 0;
-    PCin();
-    PCout();ALin();
-    printf("FIRST:%d\n",proc->IR);
-    read();
-    DLout();IRin();
-    printf("SECOND:%d\n",proc->IR);
-    decodeOpcode(&proc->IR);
-    AAout();
-    printf("%d",proc->addressBus);
-    printf("TERMINER:%d\n",proc->R[3]);
-    PCin();
-    PCout();ALin();
-    printf("FIRST:%d\n",proc->IR);
-    read();
-    DLout();IRin();
-    printf("SECOND:%d\n",proc->IR);
-    decodeOpcode(&proc->IR);
-    AAout();
-    printf("TERMINER:%d\n",proc->R[3]);
+    // startSimulation();
+    int8_t a = 0b10;
+    int8_t b = 0b01;
+    int8_t result;
+
+    if (add_with_carry(a, b, &result)) {
+        printf("Carry occurred!\n");
+    } else {
+        printf("No carry.\n");
+    }
+
+    return 0;
 }
