@@ -21,25 +21,14 @@ Instruction instructionSet[NUM_INSTRUCTIONS] = {
     {0b00111111,0b11000000,mv_Rn_Rm}
 };
 
-MinimalBit minimalBit[8] = {
-    {0,1,1},
-    {2,3,2},
-    {4,7,3},
-    {8,15,4},
-    {16,31,5},
-    {32,63,6},
-    {64,127,7},
-    {128,255,8}
-};
-
-int8_t dec_Rn(int8_t variablePart){
-    printf("DEC R%d\n",variablePart);
+int8_t dec_Rn(int8_t Rn){
+    DEC(Rn);
 }
-int8_t inc_Rn(int8_t variablePart){
-    printf("INC R%d\n",variablePart);
+int8_t inc_Rn(int8_t Rn){
+    INC(Rn);
 }
-int8_t not_Rn(int8_t variablePart){
-    printf("NOT R%d\n",variablePart);
+int8_t not_Rn(int8_t Rn){
+    NOT(Rn);
 }
 int8_t add_Rn_Rm(int8_t variablePart){
     int8_t Rn = (variablePart & 0b00011000) >> 3;
@@ -54,7 +43,7 @@ int8_t sub_Rn_Rm(int8_t variablePart){
 int8_t and_Rn_Rm(int8_t variablePart){
     int8_t Rn = (variablePart & 0b00011000) >> 3;
     int8_t Rm = variablePart & 0b00000111;
-    printf("AND R%d, R%d\n",Rn,Rm);
+    AND(Rn,Rm);
 }
 int8_t swp_Rn_Rm(int8_t variablePart){
     int8_t Rn = (variablePart & 0b00011000) >> 3;
@@ -64,16 +53,16 @@ int8_t swp_Rn_Rm(int8_t variablePart){
 int8_t mv_Rn_Rm(int8_t variablePart){
     int8_t Rn = (variablePart & 0b00111000) >> 3;
     int8_t Rm = variablePart & 0b00000111;
-    printf("MV R%d, R%d\n",Rn,Rm);
+    MV(Rn,Rm);
 }
 int8_t jmp_hhll(int8_t variablePart){
     JMP_HHLL();
 }
 int8_t jz_hhll(int8_t variablePart){
-    printf("JZ HHLL\n");
+    JZ_HHLL();
 }
 int8_t jc_hhll(int8_t variablePart){
-    printf("JC HHLL\n");
+    JC_HHLL();
 }
 int8_t jmp_rx0(int8_t variablePart){
     JMP_RX0();

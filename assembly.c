@@ -15,6 +15,31 @@ void ADD(int8_t Rn, int8_t Rm) {
     AAout();PCin();
 }
 
+void DEC(int8_t Rn){
+    SR(Rn); Rout(); Xin();
+    decALU();ALUout(); SR(Rn); Rin();
+    AAout();PCin();
+}
+
+void INC(int8_t Rn){
+    SR(Rn); Rout(); Xin();
+    incALU();ALUout(); SR(Rn); Rin();
+    AAout();PCin();
+}
+
+void NOT(int8_t Rn){
+    SR(Rn); Rout(); Xin();
+    notALU();ALUout(); SR(Rn); Rin();
+    AAout();PCin();
+}
+
+void AND(int8_t Rn, int8_t Rm){
+    SR(Rn); Rout(); Xin();
+    SR(Rm), Rout(); Yin();
+    andALU(); ALUout(); SR(Rn); Rin();
+    AAout();PCin();
+}
+
 void SUB(int8_t Rn, int8_t Rm) {
     SR(Rn); Rout(); Xin();
     SR(Rm); Rout(); Yin();
@@ -116,11 +141,29 @@ void JMP_HHLL(){
 }
 
 void JZ_HHLL(){
-
+    AAout();ALin();
+    read();
+    if(getZeroFlag()){
+        DLout();Xin();AAout();ALin();read();
+        DLout();PCHin();
+        RepX(); ALUout(); PCLin();
+    }
+    else{
+        AAout();PCin();
+    }
 }
 
 void JC_HHLL(){
-
+    AAout();ALin();
+    read();
+    if(getCarryFlag()){
+        DLout();Xin();AAout();ALin();read();
+        DLout();PCHin();
+        RepX(); ALUout(); PCLin();
+    }
+    else{
+        AAout();PCin();
+    }
 }
 
 void JMP_RX0(){

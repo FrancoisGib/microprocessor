@@ -3,12 +3,6 @@
 
 #define NUM_INSTRUCTIONS 17
 
-typedef struct{
-    int8_t start;
-    int8_t end;
-    int8_t nb_Bit;
-} MinimalBit;
-
 typedef struct {
     int8_t opcode;
     int8_t mask;

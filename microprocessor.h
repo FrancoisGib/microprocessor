@@ -26,6 +26,11 @@ typedef struct {
     int8_t controlUnit[3];
 } microprocessor_t;
 
+typedef struct{
+    int8_t start;
+    int8_t end;
+    int8_t nb_Bit;
+} MinimalBit;
 
 
 // Function to get the singleton instance
@@ -61,11 +66,13 @@ void ALUout();
 
 // Micro-instructions for ALU
 void addALU();
+void andALU();
 void subALU();
 void multALU();
 void divALU();
 void incALU();
 void decALU();
+void notALU();
 
 // IR signals
 void IRin();
@@ -76,5 +83,10 @@ void write();
 
 //Flags Update
 void updateFlags(int8_t result);
+int8_t getMinimalBit(int8_t number);
+int chechForCarry(int8_t result);
+int8_t getCarryFlag();
+int8_t getZeroFlag();
+int8_t getSignFlag();
 
 #endif // MICROPROCESSOR_H

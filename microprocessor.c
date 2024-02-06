@@ -4,6 +4,16 @@
 #include<math.h>
 static microprocessor_t microprocessor;
 
+MinimalBit minimalBit[8] = {
+    {0,1,1},
+    {2,3,2},
+    {4,7,3},
+    {8,15,4},
+    {16,31,5},
+    {32,63,6},
+    {64,127,7},
+    {128,255,8}
+};
 // R registers signals
 
 void SR(int i) {
@@ -94,26 +104,46 @@ void ALUout() {
 
 void addALU() {
     microprocessor.ALUcom = (microprocessor.X + microprocessor.Y);
+    int8_t result = microprocessor.X + microprocessor.Y;
+    updateFlags(result);
 }
 
 void subALU() {
     microprocessor.ALUcom = (microprocessor.X - microprocessor.Y);
+    int8_t result = microprocessor.X + microprocessor.Y;
+    updateFlags(result);
 }
 
 void multALU() {
     microprocessor.ALUcom = (microprocessor.X * microprocessor.Y);
+    int8_t result = microprocessor.X + microprocessor.Y;
+    updateFlags(result);
 }
 
 void divALU() {
     microprocessor.ALUcom = (microprocessor.X / microprocessor.Y);
+    int8_t result = microprocessor.X + microprocessor.Y;
+    updateFlags(result);
 }
 
 void incALU() {
     microprocessor.ALUcom = (microprocessor.X + 1);
+    int8_t result = microprocessor.X + microprocessor.Y;
+    updateFlags(result);
+}
+
+void notALU(){
+    microprocessor.ALUcom = (~microprocessor.X);
+}
+
+void andALU(){
+    microprocessor.ALUcom = (microprocessor.X & microprocessor.Y);
 }
 
 void decALU() {
     microprocessor.ALUcom = (microprocessor.X - 1);
+    int8_t result = microprocessor.X + microprocessor.Y;
+    updateFlags(result);
 }
 
 void RepX() {
@@ -142,13 +172,24 @@ void write() {
     microprocessor.ram[microprocessor.AL] = microprocessor.DL;
 }
 
-int chechForCarry(){
-    int8_t num = max(microprocessor.X,microprocessor.Y);
-    for (int i = 0; i < 8; i++)
+int chechForCarry(int8_t result){
+    int8_t num = fmax(microprocessor.X,microprocessor.Y);
+    int8_t result_minimal_Bit = getMinimalBit(result);
+    int8_t num_minimal_Bit = getMinimalBit(num);
+    if(result_minimal_Bit != -1 && num_minimal_Bit != -1){
+        return result_minimal_Bit > num_minimal_Bit; 
+    } 
+    return -1;
+}
+
+int8_t getMinimalBit(int8_t number){
+        for (int i = 0; i < 8; i++)
     {
-        if(num >= minimalBit[i] && )
+        if(number >= minimalBit[i].start && number <= minimalBit[i].end){
+            return minimalBit[i].nb_Bit;
+        }
     }
-    
+    return -1;
 }
 void updateFlags(int8_t result){
     if(result == 0){
@@ -161,11 +202,23 @@ void updateFlags(int8_t result){
        microprocessor.zeroFlag = 0;
        microprocessor.carryFlag = 0;
     }
-    else if (result > 255)
+    else if (chechForCarry(result))
     {
-        return;
+        microprocessor.carryFlag = 1;
+        microprocessor.signFlag = 0;
+        microprocessor.zeroFlag = 0;
     }
     
+}
+
+int8_t getCarryFlag(){
+    return microprocessor.carryFlag;
+}
+int8_t getZeroFlag(){
+    return microprocessor.zeroFlag;
+}
+int8_t getSignFlag(){
+    return microprocessor.signFlag;
 }
 microprocessor_t *getMicroProcessor(){
     return &microprocessor;
