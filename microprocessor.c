@@ -110,25 +110,25 @@ void addALU() {
 
 void subALU() {
     microprocessor.ALUcom = (microprocessor.X - microprocessor.Y);
-    int8_t result = microprocessor.X + microprocessor.Y;
+    int8_t result = microprocessor.X - microprocessor.Y;
     updateFlags(result);
 }
 
 void multALU() {
     microprocessor.ALUcom = (microprocessor.X * microprocessor.Y);
-    int8_t result = microprocessor.X + microprocessor.Y;
+    int8_t result = microprocessor.X * microprocessor.Y;
     updateFlags(result);
 }
 
 void divALU() {
     microprocessor.ALUcom = (microprocessor.X / microprocessor.Y);
-    int8_t result = microprocessor.X + microprocessor.Y;
+    int8_t result = microprocessor.X / microprocessor.Y;
     updateFlags(result);
 }
 
 void incALU() {
     microprocessor.ALUcom = (microprocessor.X + 1);
-    int8_t result = microprocessor.X + microprocessor.Y;
+    int8_t result = microprocessor.X + 1;
     updateFlags(result);
 }
 
@@ -142,7 +142,7 @@ void andALU(){
 
 void decALU() {
     microprocessor.ALUcom = (microprocessor.X - 1);
-    int8_t result = microprocessor.X + microprocessor.Y;
+    int8_t result = microprocessor.X - 1;
     updateFlags(result);
 }
 
@@ -219,6 +219,9 @@ int8_t getZeroFlag(){
 }
 int8_t getSignFlag(){
     return microprocessor.signFlag;
+}
+int16_t getHHLL(){
+    return microprocessor.AL;
 }
 microprocessor_t *getMicroProcessor(){
     return &microprocessor;

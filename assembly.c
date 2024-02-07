@@ -1,5 +1,6 @@
 #include "assembly.h"
 #include "microprocessor.h"
+#include <stdio.h>
 
 JointRegisterDict jointRegisterDict[NUM_JOINT_REGISTERS] = {
     {0,0,1},
@@ -143,7 +144,7 @@ void JMP_HHLL(){
 void JZ_HHLL(){
     AAout();ALin();
     read();
-    if(getZeroFlag()){
+    if(!getZeroFlag()){
         DLout();Xin();AAout();ALin();read();
         DLout();PCHin();
         RepX(); ALUout(); PCLin();
@@ -169,4 +170,7 @@ void JC_HHLL(){
 void JMP_RX0(){
     SR(0); Rout(); PCLin();
     SR(1); Rout(); PCHin();
+}
+int16_t getHHLL_AS(){
+    return getHHLL();
 }

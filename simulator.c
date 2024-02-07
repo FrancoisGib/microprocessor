@@ -45,19 +45,15 @@ void startSimulation(){
     launchInitPhase(proc);
     int start = findInstructionStart(proc->ram);
     int end = findInstructionEnd(proc->hasInstruction,start);
+
     if(start != -1){
         proc->PC = start;
-        fetchInstruction(proc);
-        decodeInstruction(proc);
-        displayRegisters(proc);
-        fetchInstruction(proc);
-        decodeInstruction(proc);
-        displayRegisters(proc);
-        fetchInstruction(proc);
-        decodeInstruction(proc);
-        displayRegisters(proc);
-        fetchInstruction(proc);
-        decodeInstruction(proc);
-        displayRegisters(proc);
+        int i = start;
+        printf("-----------------\n");
+        while(proc->PC != end){
+            fetchInstruction(proc);
+            decodeInstruction(proc);
+            displayRegisters(proc);            
+        }
     }
 }

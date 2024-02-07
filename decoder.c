@@ -22,67 +22,84 @@ Instruction instructionSet[NUM_INSTRUCTIONS] = {
 };
 
 int8_t dec_Rn(int8_t Rn){
+    printf("Instruction: DEC R%d\n",Rn);
     DEC(Rn);
 }
 int8_t inc_Rn(int8_t Rn){
+    printf("Instruction: INC R%d\n",Rn);
     INC(Rn);
 }
 int8_t not_Rn(int8_t Rn){
+    printf("Instruction: NOT R%d\n",Rn);
     NOT(Rn);
 }
 int8_t add_Rn_Rm(int8_t variablePart){
     int8_t Rn = (variablePart & 0b00011000) >> 3;
     int8_t Rm = variablePart & 0b00000111;
+    printf("Instruction: ADD R%d, R%d\n",Rn,Rm);
     ADD(Rn,Rm);
 }
 int8_t sub_Rn_Rm(int8_t variablePart){
     int8_t Rn = (variablePart & 0b00011000) >> 3;
     int8_t Rm = variablePart & 0b00000111;
+    printf("Instruction: SUB R%d, R%d\n",Rn,Rm);
     SUB(Rn,Rm);
 }
 int8_t and_Rn_Rm(int8_t variablePart){
     int8_t Rn = (variablePart & 0b00011000) >> 3;
     int8_t Rm = variablePart & 0b00000111;
+    printf("Instruction: AND R%d, R%d\n",Rn,Rm);
     AND(Rn,Rm);
 }
 int8_t swp_Rn_Rm(int8_t variablePart){
     int8_t Rn = (variablePart & 0b00011000) >> 3;
     int8_t Rm = variablePart & 0b00000111;
+    printf("Instruction: SWP R%d, R%d\n",Rn,Rm);
     SWP(Rn,Rm);
 }
 int8_t mv_Rn_Rm(int8_t variablePart){
     int8_t Rn = (variablePart & 0b00111000) >> 3;
     int8_t Rm = variablePart & 0b00000111;
+    printf("Instruction: MV R%d, R%d\n",Rn,Rm);
     MV(Rn,Rm);
 }
 int8_t jmp_hhll(int8_t variablePart){
     JMP_HHLL();
+    printf("Instruction: JMP %d\n",getHHLL_AS());
 }
 int8_t jz_hhll(int8_t variablePart){
     JZ_HHLL();
+    printf("Instruction: JZ %d\n",getHHLL_AS());
 }
 int8_t jc_hhll(int8_t variablePart){
     JC_HHLL();
+    printf("Instruction: JC %d\n",getHHLL_AS());
 }
 int8_t jmp_rx0(int8_t variablePart){
+    printf("Instruction: JMP RX0\n");
     JMP_RX0();
 }
 int8_t st_r0_rxn(int8_t variablePart){
     int8_t RXn = (variablePart & 0b00000011);
+    printf("Instruction: ST R0, RX%d\n",RXn);
     ST_R0_RXn(RXn);
 }
 int8_t ld_r0_rxn(int8_t variablePart){
     int8_t RXn = (variablePart & 0b00000011);
+    printf("Instruction: LD R0, RX%d\n",RXn);
     LD_R0_RXn(RXn);
 }
 int8_t st_rn_hhll(int8_t Rn){
     ST_Rn_HHLL(Rn);
+    printf("Instruction: ST R%d, %d\n",Rn,getHHLL_AS());
 }
 int8_t ld_rn_hhll(int8_t Rn){
     LD_RN_HHLL(Rn);
+    printf("Instruction: LD R%d, %d\n",Rn,getHHLL_AS());
 }
 int8_t mv_rn_arg(int8_t Rn){
     MV_Rn_arg(Rn);
+    printf("MV R%d, %d\n",Rn,getHHLL_AS());
 }
 
 

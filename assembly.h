@@ -29,3 +29,4 @@ typedef struct
 } JointRegisterDict;
 
 void getJointRegisters(int8_t* firstRegister, int8_t* secondRegister,int8_t num);
+int16_t getHHLL_AS();

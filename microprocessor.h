@@ -88,5 +88,6 @@ int chechForCarry(int8_t result);
 int8_t getCarryFlag();
 int8_t getZeroFlag();
 int8_t getSignFlag();
+int16_t getHHLL();
 
 #endif // MICROPROCESSOR_H
