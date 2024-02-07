@@ -10,6 +10,12 @@ typedef struct {
     int8_t* args;
 } control_unit_decoded_instruction;
 
+typedef struct {
+    int8_t opcode;
+    int8_t mask;
+    int8_t size;
+} instruction;
+
 typedef void (*assembly_function)(control_unit_decoded_instruction* params);
 
 void readFile(char* path);

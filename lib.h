@@ -8,8 +8,19 @@
 typedef struct {
     char* desc;
     int8_t instruction_name_size;
-    int nb_args;
-} assembly_instructions;
+    int8_t nb_bytes;
+    int8_t nb_args;
+    int8_t first_shift;
+    int8_t args_masks[3];
+} instructions_lengths;
+
+
+typedef struct {
+    int8_t operation_size;
+    char* description;
+    int8_t desc_size;
+    int8_t nb_args;
+} instruction_description;
 
 typedef struct {
     int8_t opcode;    
@@ -28,3 +39,4 @@ void decodeWhenInstructionNameLengthEqualsFive(int8_t first_byte, instructions_d
 void decodeWhenInstructionNameLengthEqualsThree(int8_t first_byte, instructions_details* details, FILE* output);
 void decodeWhenInstructionNameLengthEqualsTwo(int8_t first_byte, instructions_details* details, FILE* output);
 void decodeWhenInstructionNameLengthEqualsSix(int8_t first_byte, instructions_details* details, FILE* output);
+void writeInstructionInOutputFile(instructions_details* details, FILE* output);

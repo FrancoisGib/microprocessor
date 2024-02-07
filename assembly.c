@@ -1,12 +1,9 @@
 #include "assembly.h"
 
 void JMP() {
-    microprocessor_t *micro = getMicroProcessor();
-    printf("\nPC before: 0x%04x", micro->PC);
-    PCout(); ALin(); readSignal();
+    readSignal();
     DLout(); PCHin(); AAout(); ALin(); readSignal();
     DLout(); PCLin();
-    printf("\nPC after: 0x%04x", micro->PC);
 }
 
 

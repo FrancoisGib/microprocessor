@@ -3,19 +3,7 @@
 
 microprocessor_t* reset() {
     microprocessor_t* microprocessor = getMicroProcessor();
-    memset(microprocessor->ram, 0, 1024);
-    microprocessor->addressBus = 0;
-    microprocessor->AL = 0;
-    microprocessor->ALUcom = 0;
-    microprocessor->CS = 0;
-    microprocessor->dataBus = 0;
-    microprocessor->DL = 0;
-    memset(microprocessor->F, 0, 2);
-    microprocessor->IR = 0;
-    microprocessor->PC = 0;
-    memset(microprocessor->R, 0, 8);
-    microprocessor->X = 0;
-    microprocessor->Y = 0;
+    memset(microprocessor->ram, 0, sizeof(microprocessor));
     return microprocessor;
 }
 

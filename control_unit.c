@@ -2,7 +2,7 @@
 
 control_unit_t control_unit;
 
-assembly_instructions instructio[] = {
+instructions_lengths instructions[] = {
     {"jmp", 8, 0},
     {"jz", 8, 0},
     {"jc", 8, 0},
@@ -26,7 +26,7 @@ control_unit_decoded_instruction* decodeInstruction(int8_t first_byte) {
     int8_t opcode = decodeOpcode(first_byte);
     control_unit_decoded_instruction* details = (control_unit_decoded_instruction*)malloc(sizeof(control_unit_decoded_instruction));
     details->opcode = opcode;
-    assembly_instructions instruction = instructio[opcode];
+    instructions_lengths instruction = instructions[opcode];
     details->nb_args = instruction.nb_args;
     details->args = (int8_t*)malloc(sizeof(int8_t) * details->nb_args);
     details->args[0] = control_unit.bytes[0];
@@ -75,24 +75,24 @@ control_unit_t* getControlUnit() {
     return &control_unit;
 }
 
-Instruction iSET[] = {
-    {0b01110000,0b11111111,jmp_hhll, 1},
-    {0b01110001,0b11111111,jz_hhll, 1},
-    {0b01110010,0b11111111,jc_hhll, 1},
-    {0b01110011,0b11111111,jmp_rx0, 1},
-    {0b01111011,0b11111100,st_r0_rxn, 1},
-    {0b01111111,0b11111100,ld_r0_rxn, 1},
-    {0b01000111,0b11111000,st_rn_hhll, 1},
-    {0b01001111,0b11111000,ld_rn_hhll, 1},
-    {0b01010111,0b11111000,mv_rn_arg, 2},
-    {0b01011111,0b11111000,dec_Rn, 1}, 
-    {0b01100111,0b11111000,inc_Rn, 1},
-    {0b01101111,0b11111000,not_Rn, 1},
-    {0b10011111,0b11100000,add_Rn_Rm, 1},
-    {0b10111111,0b11100000,sub_Rn_Rm, 1},
-    {0b11011111,0b11100000,and_Rn_Rm, 1},
-    {0b11111111,0b11100000,swp_Rn_Rm, 1},
-    {0b00111111,0b11000000,mv_Rn_Rm, 1}
+instruction iSET[] = {
+    {0b01110000,0b11111111, 1},
+    {0b01110001,0b11111111, 1},
+    {0b01110010,0b11111111, 1},
+    {0b01110011,0b11111111, 1},
+    {0b01111011,0b11111100, 1},
+    {0b01111111,0b11111100, 1},
+    {0b01000111,0b11111000, 1},
+    {0b01001111,0b11111000, 1},
+    {0b01010111,0b11111000, 2},
+    {0b01011111,0b11111000, 1}, 
+    {0b01100111,0b11111000, 1},
+    {0b01101111,0b11111000, 1},
+    {0b10011111,0b11100000, 1},
+    {0b10111111,0b11100000, 1},
+    {0b11011111,0b11100000, 1},
+    {0b11111111,0b11100000, 1},
+    {0b00111111,0b11000000, 1}
 };
 
 assembly_function functions[] = {control_jmp_hhll, control_jz, control_jc, control_jmp_rx0, control_st_r0_rxn, control_ld_r0_rxn, control_st_rn_hhll, control_ld_rn_hhll, control_mv_rn_arg, control_dec, control_inc, control_not, control_add, control_sub, control_and, control_swp, control_mv_Rn_Rm};
@@ -160,8 +160,8 @@ void control_jz(control_unit_decoded_instruction* params) {
     if (micro->F[1] == 1)
         JMP();
     else {
-        NOP();
-        NOP();
+        readNextByte();
+        readNextByte();
     }
 }
 
@@ -171,8 +171,8 @@ void control_jc(control_unit_decoded_instruction* params) {
         JMP();
     }
     else {
-        NOP();
-        NOP();
+        readNextByte();
+        readNextByte();
     }
 }
 
