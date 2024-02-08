@@ -144,13 +144,13 @@ void JMP_HHLL(){
 void JZ_HHLL(){
     AAout();ALin();
     read();
-    if(!getZeroFlag()){
+    if(getZeroFlag()){
         DLout();Xin();AAout();ALin();read();
         DLout();PCHin();
         RepX(); ALUout(); PCLin();
     }
     else{
-        AAout();PCin();
+        AAout();AAout();PCin();
     }
 }
 
@@ -163,7 +163,7 @@ void JC_HHLL(){
         RepX(); ALUout(); PCLin();
     }
     else{
-        AAout();PCin();
+        AAout();AAout();PCin();
     }
 }
 

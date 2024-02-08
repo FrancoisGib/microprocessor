@@ -13,33 +13,31 @@ void fillMemory(uint8_t* RAM,int8_t* hasInstruction, size_t size){
     char line[256];
     int8_t isData = 0;
     while (fgets(line, sizeof(line), input) != NULL) {
-        int16_t value1;
-        int8_t value2, value3, value4;
+        int16_t address;
+        int8_t value1, value2, value3;
         if (strstr(line, "FFFF") != NULL) {
             break;
         }
         //pattern matching
-        int result = sscanf(line, "%hx: %hhx %hhx %hhx", &value1, &value2, &value3, &value4);
+        int result = sscanf(line, "%hx: %hhx %hhx %hhx", &address, &value1, &value2, &value3);
         if(strstr(line,"DATA") != NULL){
             isData = 1;
         }
         if (result >= 2) {
             if(isData){
-                hasInstruction[value1] = 2;
+                hasInstruction[address] = 2;
             }
             else{
-                hasInstruction[value1] = 1;
+                hasInstruction[address] = 1;
             }
-            RAM[value1] = value2;
-            if (result == 3) {
-                RAM[value1 + 1] = value3;  
-                hasInstruction[value1+1] = 1;
+            RAM[address] = value1;
+            if (result >= 3) {
+                RAM[address + 1] = value2;  
+                hasInstruction[address+1] = 1;
             }
             if(result == 4){
-                RAM[value1 + 1] = value3;
-                RAM[value1 + 2] = value4;
-                hasInstruction[value1+1] = 1;
-                hasInstruction[value1+2] = 1;
+                RAM[address + 2] = value3;
+                hasInstruction[address+2] = 1;
             }
         }
     }

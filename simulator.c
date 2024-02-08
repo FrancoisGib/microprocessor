@@ -36,7 +36,7 @@ void displayRegisters(microprocessor_t* proc){
     printf("Registers: ");
     for (size_t i = 0; i < 8; i++)
     {
-        printf("[R[%ld] | %d]  ",i,proc->R[i]);
+        printf("[R%ld | %d]  ",i,proc->R[i]);
     }
     printf("\n");
 }
@@ -48,12 +48,13 @@ void startSimulation(){
 
     if(start != -1){
         proc->PC = start;
-        int i = start;
+        // printf("END: %d",end);
         printf("-----------------\n");
         while(proc->PC != end){
             fetchInstruction(proc);
             decodeInstruction(proc);
-            displayRegisters(proc);            
+            displayRegisters(proc);
+            printf("PC After instruction: %d\n",proc->PC);            
         }
     }
 }
