@@ -2,9 +2,11 @@
 #include <inttypes.h>
 #include "lib.h"
 
+
+FILE *output = fopen("output.s","w");
+
 void fillMemory(uint8_t* RAM,int8_t* hasInstruction, size_t size){
     FILE *input = fopen("boucle.txt", "r");
-    FILE *output = fopen("output.s","w");
     fillWithZero(RAM,size);
     if (input == NULL) {
         perror("Error opening file");
@@ -60,13 +62,16 @@ void displayInstructions(uint8_t* RAM,int8_t* hasInstruction,size_t size){
     {
         if(hasInstruction[i] == 1){
             printf("[%ld | %02X]  ",i,RAM[i]);
-            if ((i + 1) % 2 == 0) {
+            if ((i + 2) % 3 == 0) {
                 printf("\n");
             }
         }
     }
     printf("\n");
 }
+
+
+
 void displayData(uint8_t* RAM,int8_t* hasInstruction,size_t size){
     printf("Data\n");
     printf("-----------------\n");
