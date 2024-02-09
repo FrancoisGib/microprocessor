@@ -1,3 +1,6 @@
+#ifndef _ASSEMBLY_H_
+#define _ASSEMBLY_H_
+#define debug(...) do { fprintf(fd, "[%s:%d]:(%s) ", __FILE__, __LINE__, __PRETTY_FUNCTION__); fprintf(fd, __VA_ARGS__); } while(0)
 #include <stdint.h>
 
 #define NUM_JOINT_REGISTERS 4
@@ -30,3 +33,5 @@ typedef struct
 
 void getJointRegisters(int8_t* firstRegister, int8_t* secondRegister,int8_t num);
 int16_t getHHLL_AS();
+
+#endif

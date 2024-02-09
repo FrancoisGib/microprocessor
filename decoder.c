@@ -1,5 +1,9 @@
 #include "decoder.h"
+#include <stdio.h>
 #include "assembly.h"
+#include <string.h>
+#include <stdlib.h>
+
 
 Instruction instructionSet[NUM_INSTRUCTIONS] = {
     {0b01110000,0b11111111,jmp_hhll},
@@ -21,87 +25,123 @@ Instruction instructionSet[NUM_INSTRUCTIONS] = {
     {0b00111111,0b11000000,mv_Rn_Rm}
 };
 
-int8_t dec_Rn(int8_t Rn){
-    printf("Instruction: DEC R%d\n",Rn);
+char* dec_Rn(int8_t Rn){
     DEC(Rn);
-}
-int8_t inc_Rn(int8_t Rn){
-    printf("Instruction: INC R%d\n",Rn);
-    INC(Rn);
-}
-int8_t not_Rn(int8_t Rn){
-    printf("Instruction: NOT R%d\n",Rn);
-    NOT(Rn);
-}
-int8_t add_Rn_Rm(int8_t variablePart){
-    int8_t Rn = (variablePart & 0b00011000) >> 3;
-    int8_t Rm = variablePart & 0b00000111;
-    printf("Instruction: ADD R%d, R%d\n",Rn,Rm);
-    ADD(Rn,Rm);
-}
-int8_t sub_Rn_Rm(int8_t variablePart){
-    int8_t Rn = (variablePart & 0b00011000) >> 3;
-    int8_t Rm = variablePart & 0b00000111;
-    printf("Instruction: SUB R%d, R%d\n",Rn,Rm);
-    SUB(Rn,Rm);
-}
-int8_t and_Rn_Rm(int8_t variablePart){
-    int8_t Rn = (variablePart & 0b00011000) >> 3;
-    int8_t Rm = variablePart & 0b00000111;
-    printf("Instruction: AND R%d, R%d\n",Rn,Rm);
-    AND(Rn,Rm);
-}
-int8_t swp_Rn_Rm(int8_t variablePart){
-    int8_t Rn = (variablePart & 0b00011000) >> 3;
-    int8_t Rm = variablePart & 0b00000111;
-    printf("Instruction: SWP R%d, R%d\n",Rn,Rm);
-    SWP(Rn,Rm);
-}
-int8_t mv_Rn_Rm(int8_t variablePart){
-    int8_t Rn = (variablePart & 0b00111000) >> 3;
-    int8_t Rm = variablePart & 0b00000111;
-    printf("Instruction: MV R%d, R%d\n",Rn,Rm);
-    MV(Rn,Rm);
-}
-int8_t jmp_hhll(int8_t variablePart){
-    JMP_HHLL();
-    printf("Instruction: JMP %d\n",getHHLL_AS());
-}
-int8_t jz_hhll(int8_t variablePart){
-    JZ_HHLL();
-    printf("Instruction: JZ %d\n",getHHLL_AS());
-}
-int8_t jc_hhll(int8_t variablePart){
-    JC_HHLL();
-    printf("Instruction: JC %d\n",getHHLL_AS());
-}
-int8_t jmp_rx0(int8_t variablePart){
-    printf("Instruction: JMP RX0\n");
-    JMP_RX0();
-}
-int8_t st_r0_rxn(int8_t variablePart){
-    int8_t RXn = (variablePart & 0b00000011);
-    printf("Instruction: ST R0, RX%d\n",RXn);
-    ST_R0_RXn(RXn);
-}
-int8_t ld_r0_rxn(int8_t variablePart){
-    int8_t RXn = (variablePart & 0b00000011);
-    printf("Instruction: LD R0, RX%d\n",RXn);
-    LD_R0_RXn(RXn);
-}
-int8_t st_rn_hhll(int8_t Rn){
-    ST_Rn_HHLL(Rn);
-    printf("Instruction: ST R%d, %d\n",Rn,getHHLL_AS());
-}
-int8_t ld_rn_hhll(int8_t Rn){
-    LD_RN_HHLL(Rn);
-    printf("Instruction: LD R%d, %d\n",Rn,getHHLL_AS());
-}
-int8_t mv_rn_arg(int8_t Rn){
-    MV_Rn_arg(Rn);
-    printf("MV R%d, %d\n",Rn,getHHLL_AS());
+    char* result = malloc(100);
+    sprintf(result,"DEC %d",Rn);
+    return result;
 }
 
+char* inc_Rn(int8_t Rn){
+    INC(Rn);
+    char* result = malloc(100);
+    sprintf(result,"INC %d",Rn);
+    return result;
+
+}
+
+char* not_Rn(int8_t Rn){
+    NOT(Rn);
+    char* result = malloc(100);
+    sprintf(result,"NOT %d",Rn);
+    return result;
+}
+char* add_Rn_Rm(int8_t variablePart){
+    int8_t Rn = (variablePart & 0b00011000) >> 3;
+    int8_t Rm = variablePart & 0b00000111;
+    ADD(Rn,Rm);
+    char* result = malloc(100);
+    sprintf(result,"ADD R%d, R%d\n",Rn,Rm);
+    return result;
+}
+char* sub_Rn_Rm(int8_t variablePart){
+    int8_t Rn = (variablePart & 0b00011000) >> 3;
+    int8_t Rm = variablePart & 0b00000111;
+    SUB(Rn,Rm);
+    char* result = malloc(100);
+    sprintf(result,"SUB R%d, R%d\n",Rn,Rm);
+    return result;
+}
+char* and_Rn_Rm(int8_t variablePart){
+    int8_t Rn = (variablePart & 0b00011000) >> 3;
+    int8_t Rm = variablePart & 0b00000111;
+    AND(Rn,Rm);
+    char* result = malloc(100);
+    sprintf(result,"AND R%d, R%d\n",Rn,Rm);
+    return result;
+}
+char* swp_Rn_Rm(int8_t variablePart){
+    int8_t Rn = (variablePart & 0b00011000) >> 3;
+    int8_t Rm = variablePart & 0b00000111;
+    SWP(Rn,Rm);
+    char* result = malloc(100);
+    sprintf(result,"SWP R%d, R%d\n",Rn,Rm);
+    return result;
+}
+char* mv_Rn_Rm(int8_t variablePart){
+    int8_t Rn = (variablePart & 0b00111000) >> 3;
+    int8_t Rm = variablePart & 0b00000111;
+    MV(Rn,Rm);
+    char* result = malloc(100);
+    sprintf(result,"MV R%d, R%d\n",Rn,Rm);
+    return result;
+}
+char* jmp_hhll(int8_t variablePart){
+    JMP_HHLL();
+    char* result = malloc(100);
+    sprintf(result,"JMP %d\n",getHHLL_AS());
+    return result;
+}
+char* jz_hhll(int8_t variablePart){
+    JZ_HHLL();
+    char* result = malloc(100);
+    sprintf(result,"JZ %d\n",getHHLL_AS());
+    return result;
+}
+char* jc_hhll(int8_t variablePart){
+    JC_HHLL();
+    char* result = malloc(100);
+    sprintf(result,"JC %d\n",getHHLL_AS());
+    return result;
+}
+char* jmp_rx0(int8_t variablePart){
+    JMP_RX0();
+    char* result = malloc(100);
+    strcpy(result,"JMP RX0");
+    return result;
+}
+char* st_r0_rxn(int8_t variablePart){
+    int8_t RXn = (variablePart & 0b00000011);
+    ST_R0_RXn(RXn);
+    char* result = malloc(100);
+    sprintf(result,"ST R0, RX%d\n",RXn);
+    return result;
+}
+char* ld_r0_rxn(int8_t variablePart){
+    int8_t RXn = (variablePart & 0b00000011);
+    LD_R0_RXn(RXn);
+    char* result = malloc(100);
+    sprintf(result,"LD R0, RX%d\n",RXn);
+    return result;
+}
+char* st_rn_hhll(int8_t Rn){
+    ST_Rn_HHLL(Rn);
+    char* result = malloc(100);
+    sprintf(result,"ST R%d, %d\n",Rn,getHHLL_AS());
+    return result;
+}
+char* ld_rn_hhll(int8_t Rn){
+    LD_RN_HHLL(Rn);
+    char* result = malloc(100);
+    sprintf(result,"LD R%d, %d\n",Rn,getHHLL_AS());
+    return result;
+}
+char* mv_rn_arg(int8_t Rn){
+    MV_Rn_arg(Rn);
+    char* result = malloc(100);
+    sprintf(result,"MV R%d, %d\n",Rn,getHHLL_AS());
+    return result;
+}
 
 int getVariablePartLength(int8_t bitmask) {
     int length = 0;
@@ -112,15 +152,14 @@ int getVariablePartLength(int8_t bitmask) {
     return length;
 }
 
-void decodeOpcode(int8_t* opcode) {
+char* decodeOpcode(int8_t* opcode) {
     char* correspondingInstruction = "Unknown";
     int8_t variablePart = 0;
     for (int i = 0; i < NUM_INSTRUCTIONS; ++i) {
-        if ((instructionSet[i].opcode & instructionSet[i].mask) == (*opcode & instructionSet[i].mask)) {
+        if ((instructionSet[i].opcode & instructionSet[i].mask) == (*opcode & instructionSet[i].mask)){
             int variablePartLength = getVariablePartLength(instructionSet[i].mask);
             variablePart = (*opcode & ((1 << variablePartLength) - 1));
-            instructionSet[i].operation(variablePart);
-            break;
+            return instructionSet[i].operation(variablePart);
         }
     }
 }

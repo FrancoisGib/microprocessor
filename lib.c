@@ -3,8 +3,6 @@
 #include "lib.h"
 
 
-FILE *output = fopen("output.s","w");
-
 void fillMemory(uint8_t* RAM,int8_t* hasInstruction, size_t size){
     FILE *input = fopen("boucle.txt", "r");
     fillWithZero(RAM,size);

@@ -29,9 +29,10 @@ void fetchInstruction(microprocessor_t* proc){
     DLout();IRin();
 }
 
-void decodeInstruction(microprocessor_t* proc){
-    decodeOpcode(&proc->IR);
+char* decodeInstruction(microprocessor_t* proc){
+    return decodeOpcode(&proc->IR);
 }
+
 void displayRegisters(microprocessor_t* proc){
     printf("Registers: ");
     for (size_t i = 0; i < 8; i++)
@@ -48,13 +49,18 @@ void startSimulation(){
 
     if(start != -1){
         proc->PC = start;
-        // printf("END: %d",end);
+        FILE *output = fopen("output.s","w");
         printf("-----------------\n");
-        while(proc->PC != end){
-            fetchInstruction(proc);
-            decodeInstruction(proc);
-            displayRegisters(proc);
-            printf("PC After instruction: %d\n",proc->PC);            
-        }
+        // while(proc->PC != end){
+        //     fetchInstruction(proc);
+        //     decodeInstruction(proc);
+        //     displayRegisters(proc);
+        //     // printf("PC After instruction: %d\n",proc->PC);            
+        // }
+        fetchInstruction(proc);
+        char* str = decodeInstruction(proc);
+        fwrite(str,1,strlen(str),output);
+        free(str);
+        displayRegisters(proc);
     }
 }
