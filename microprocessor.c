@@ -194,18 +194,11 @@ int8_t getMinimalBit(int8_t number){
 void updateFlags(int8_t result){
     if(result == 0){
         microprocessor.zeroFlag = 1;
-        microprocessor.signFlag = 0;
         microprocessor.carryFlag = 0;
-    }
-    else if(result < 0){
-       microprocessor.signFlag = 1;
-       microprocessor.zeroFlag = 0;
-       microprocessor.carryFlag = 0;
     }
     else if (chechForCarry(result))
     {
         microprocessor.carryFlag = 1;
-        microprocessor.signFlag = 0;
         microprocessor.zeroFlag = 0;
     }
     
@@ -216,9 +209,6 @@ int8_t getCarryFlag(){
 }
 int8_t getZeroFlag(){
     return microprocessor.zeroFlag;
-}
-int8_t getSignFlag(){
-    return microprocessor.signFlag;
 }
 int16_t getHHLL(){
     return microprocessor.AL;

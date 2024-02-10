@@ -3,15 +3,16 @@
 #include "lib.h"
 
 
-void fillMemory(uint8_t* RAM,int8_t* hasInstruction, size_t size){
+int* fillMemory(uint8_t* RAM,int8_t* hasInstruction, size_t size){
     FILE *input = fopen("boucle.txt", "r");
     fillWithZero(RAM,size);
     if (input == NULL) {
         perror("Error opening file");
     }
-
     char line[256];
     int8_t isData = 0;
+    int *counter = (int*)malloc(sizeof(int));
+    int num = 0;
     while (fgets(line, sizeof(line), input) != NULL) {
         int16_t address;
         int8_t value1, value2, value3;
@@ -23,6 +24,10 @@ void fillMemory(uint8_t* RAM,int8_t* hasInstruction, size_t size){
         if(strstr(line,"DATA") != NULL){
             isData = 1;
         }
+        else if (!isData)
+        {
+            num++;
+        }    
         if (result >= 2) {
             if(isData){
                 hasInstruction[address] = 2;
@@ -41,7 +46,9 @@ void fillMemory(uint8_t* RAM,int8_t* hasInstruction, size_t size){
             }
         }
     }
+    *counter = num;
     fclose(input);
+    return counter;
 }
 
 void fillWithZero(int8_t* hasInstruction, size_t size){
@@ -67,8 +74,6 @@ void displayInstructions(uint8_t* RAM,int8_t* hasInstruction,size_t size){
     }
     printf("\n");
 }
-
-
 
 void displayData(uint8_t* RAM,int8_t* hasInstruction,size_t size){
     printf("Data\n");

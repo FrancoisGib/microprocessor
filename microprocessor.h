@@ -4,6 +4,7 @@
 #define RAMSIZE 1024
 #include <stdint.h>
 
+
 typedef int8_t (*ALUop)(int8_t param);
 
 typedef struct {
@@ -18,7 +19,6 @@ typedef struct {
     int8_t X;
     int8_t Y;
     int8_t zeroFlag;
-    int8_t signFlag;
     int8_t carryFlag;
     ALUop ALUcom;
     uint8_t ram[RAMSIZE];
@@ -87,7 +87,6 @@ int8_t getMinimalBit(int8_t number);
 int chechForCarry(int8_t result);
 int8_t getCarryFlag();
 int8_t getZeroFlag();
-int8_t getSignFlag();
 int16_t getHHLL();
 
 #endif // MICROPROCESSOR_H

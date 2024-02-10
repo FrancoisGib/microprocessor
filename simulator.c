@@ -1,6 +1,5 @@
-#include "lib.h"
-#include"decoder.h"
-#include"microprocessor.h"
+#include "simulator.h"
+#include <ctype.h>
 
 
 int findInstructionStart(int8_t* hasInstruction){
@@ -41,26 +40,116 @@ void displayRegisters(microprocessor_t* proc){
     }
     printf("\n");
 }
-void startSimulation(){
-    microprocessor_t* proc = getMicroProcessor();
-    launchInitPhase(proc);
+
+char* getRegisters(microprocessor_t* proc){
+    char* result = malloc(100);
+    for (size_t i = 0; i < 8; i++)
+    {
+        char temp[100];
+        sprintf(temp,"[R%ld | %d]  ",i,proc->R[i]);
+        strcat(result,temp);
+    }
+    return result;
+}
+
+//Ouais bon il ya un début à tout God Bless les malloc et bonne lecture
+void launchInDebugMode(microprocessor_t* proc){
+    int* instructionLength = fillMemory(proc->ram,proc->hasInstruction,1024);
+    int capacity = 1;// capacité initial
+    int size = 0;// nombre d'element à l'instant T
     int start = findInstructionStart(proc->ram);
     int end = findInstructionEnd(proc->hasInstruction,start);
+    debuggerRegistry* registry = (debuggerRegistry*)malloc(sizeof(debuggerRegistry));
+    if(start != -1){
+        //On pointe vers la première addresse de la RAM
+        proc->PC = start;
+        printf("-----------------\n");
+        while(proc->PC != end){
+            fetchInstruction(proc);
+            char* str = decodeInstruction(proc);
+            if(size >= capacity){
+                capacity*=2;
+                //On augmente la capacité de lu registre, ici on ne perds pas les données vu que l'on utilise realloc
+                debuggerRegistry* temp = realloc(registry,sizeof(debuggerRegistry) * capacity);
+                if(temp == NULL){
+                    fprintf(stderr, "Memory reallocation failed\n");
+                    //On free les mémoires déja allouer
+                    for (int i = 0; i < size; ++i) {
+                        free(registry[i].instruction);
+                        free(registry[i].register_);
+                    }
+                    free(registry);
+                    return;
+                }
+                registry = temp;//maj du registre
+            }
+            registry[size].idx = size;
+            registry[size].instruction = strdup(str);//askip il faut reallouer de la mémoire ici va comprendre
+            char * register_ = getRegisters(proc);
+            registry[size].register_ =  strdup(register_);
+            free(str);
+            free(register_);       
+            //On increment le nombre l'élément
+            size++;
+        }
+    }
+    //On fait free toute la memoire que l'on a allouer dynamiquement
+    for (int i = 0; i < size; i++)
+    {
+        free(registry[i].instruction);
+        free(registry[i].register_);
+    }
+    free(registry);
+    free(instructionLength);
+}
 
+void launchInNormalMode(microprocessor_t* proc){
+    int* instructionLength = fillMemory(proc->ram,proc->hasInstruction,1024);
+    displayMemory(proc->ram,proc->hasInstruction,1024);
+    int start = findInstructionStart(proc->ram);
+    int end = findInstructionEnd(proc->hasInstruction,start);
+    
     if(start != -1){
         proc->PC = start;
         FILE *output = fopen("output.s","w");
         printf("-----------------\n");
-        // while(proc->PC != end){
-        //     fetchInstruction(proc);
-        //     decodeInstruction(proc);
-        //     displayRegisters(proc);
-        //     // printf("PC After instruction: %d\n",proc->PC);            
-        // }
-        fetchInstruction(proc);
-        char* str = decodeInstruction(proc);
-        fwrite(str,1,strlen(str),output);
-        free(str);
-        displayRegisters(proc);
+        int counter = 0;
+        while(proc->PC != end){
+            fetchInstruction(proc);
+            char* str = decodeInstruction(proc);
+            if(counter < *instructionLength){
+                fwrite(str,1,strlen(str),output);
+                counter++;
+            }
+            free(str);
+            displayRegisters(proc);            
+        }
+        free(instructionLength);
+    }
+}
+
+int askMode(){
+    char response[10];
+    printf("Do you want to launch your program in Debug mode? (yes/no): ");
+    scanf("%s",response);
+
+    for (int i = 0; response[i]; i++) {
+        response[i] = tolower(response[i]);
+    }
+
+    if(strcmp(response, "yes") == 0 || strcmp(response,"y") == 0){
+        return 1;
+    }
+    return 0;
+}
+
+void startSimulation(){
+    microprocessor_t* proc = getMicroProcessor();
+    int debugMode = askMode();
+    if(debugMode){
+        launchInDebugMode(proc);
+    }
+    else{
+        launchInNormalMode(proc);
     }
 }
