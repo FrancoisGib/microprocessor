@@ -43,6 +43,7 @@ void displayRegisters(microprocessor_t* proc){
 
 char* getRegisters(microprocessor_t* proc){
     char* result = malloc(100);
+    result[0] = '\0';
     for (size_t i = 0; i < 8; i++)
     {
         char temp[100];
@@ -93,6 +94,7 @@ void launchInDebugMode(microprocessor_t* proc){
             size++;
         }
     }
+    runDebugModeController(registry,size);
     //On fait free toute la memoire que l'on a allouer dynamiquement
     for (int i = 0; i < size; i++)
     {
@@ -101,6 +103,37 @@ void launchInDebugMode(microprocessor_t* proc){
     }
     free(registry);
     free(instructionLength);
+}
+
+//affichage de du mode debugger
+void runDebugModeController(debuggerRegistry* registry,int size){
+    printf("Enter the index you want to break at\n");
+    printf("Index | Instruction\n");
+    printf("-----------------\n");
+    char input[20];
+    displayDebugMode(registry,size);
+    while(1){
+        scanf("%s",input);
+        int breakpoint = atoi(input);
+        if(breakpoint != 0 || strcmp(input,"0") == 0){
+            if(breakpoint < size){
+                printf("%s\n",registry[breakpoint].register_);
+            }
+            else{
+                printf("Invalid input: Breakpoint exceeds maximum allowed value\n");
+            }
+        }   
+        else{
+            printf("Invalid input: Not an integer\n");
+        }
+    }
+}
+
+void displayDebugMode(debuggerRegistry* registry, int size){
+        for (int i = 0; i < size; i++)
+    {
+        printf("%d: %s",i,registry[i].instruction);
+    }
 }
 
 void launchInNormalMode(microprocessor_t* proc){
@@ -121,9 +154,9 @@ void launchInNormalMode(microprocessor_t* proc){
                 fwrite(str,1,strlen(str),output);
                 counter++;
             }
-            free(str);
-            displayRegisters(proc);            
+            free(str);           
         }
+        displayRegisters(proc); 
         free(instructionLength);
     }
 }
