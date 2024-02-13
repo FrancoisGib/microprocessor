@@ -150,8 +150,8 @@ void writeSignal() {
 
 void readNextByte() {
     PCout(); ALin(); readSignal();
-    AAout(), PCin();
-    DLout(); IRin();
+    AAout(), PCin(); 
+    DLout(); IRin(); ALin();
 }
 
 

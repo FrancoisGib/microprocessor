@@ -1,6 +1,0 @@
-mv R1, $5
-inc R2
-dec R1
-jz 0a20
-jmp 020
-st R2, 0100

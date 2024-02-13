@@ -4,13 +4,13 @@
 typedef int8_t (*ALUop)(int8_t param);
 
 typedef struct {
-    int8_t R[8];
-    int8_t CS;
     int16_t PC;
     int8_t DL;
     int16_t AL;
     int8_t dataBus;
     int16_t addressBus;
+    int8_t R[8];
+    int8_t CS;
     int8_t IR;
     int8_t X;
     int8_t Y;

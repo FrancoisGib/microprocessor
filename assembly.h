@@ -1,6 +1,5 @@
 #include "microprocessor.h"
 
-void NOP();
 void JMP();
 void JMP_RX0();
 void ST_R0_RXn(int8_t n);

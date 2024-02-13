@@ -1,23 +1,26 @@
 #include "control_unit.h"
 
-int main(int argc, char *argv[]) {
-    if (argc < 2) {
-        printf("Please specity the path to a program file\n");
-        return -1;
-    }
-    char* pathname = argv[1];
-    microprocessor_t* process = getMicroProcessor();
-    int i;
-    for (i = 0; i < 8; i++)
-        process->R[i] = 0;
-    memset(process->ram, 0, 1024);
-    readFile(pathname);
+int main(int argc, char* argv[]) {
+    readFile(argv[1], 1);
     callControlUnit();
-    for (i = 0; i < 1024; i++)
-        printf(" %02x ", process->ram[i]);
-    printf("\n");
-    for (i = 0; i < 8; i++)
-        printf("\nR%d = %d", i, process->R[i]);
-    printf("\n%d", process->ram[0x0101]);
+    microprocessor_t* process = getMicroProcessor();
+    printf("\n-------------------\n Memory:\n\n");
+    for (int i = 0; i < 1024; i++)
+        printf("%02X ", (uint8_t)process->ram[i]);
+    printf("\n\n-------------------\n Registers:\n\n");
+    for (int i = 0; i < 8; i++)
+        printf(" - R%d = %.2X\n", i, process->R[i]);
+    printf("\n - PC = %.4X\n", (uint16_t)process->PC);
+    printf(" - Data Latch = %.2X\n", (uint8_t)process->DL);
+    printf(" - Data Bus = %.2X\n", (uint8_t)process->dataBus);
+    printf(" - Address Latch = %.4X\n", (uint16_t)process->AL);
+    printf(" - Address Bus = %.4X\n", (uint16_t)process->addressBus);
+    printf(" - CS = %.2X\n", process->CS);
+    printf(" - IR = %.2X\n", (uint8_t)process->IR);
+    printf(" - X = %.2X\n", process->X);
+    printf(" - Y = %.2X\n", process->Y);
+    printf("\n-------------------\n Flags:\n\n");
+    printf(" - FC = %d\n", process->F[0]);
+    printf(" - FZ = %d\n", process->F[1]);
     return 0;
 }

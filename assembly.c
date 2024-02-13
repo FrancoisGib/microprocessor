@@ -2,10 +2,9 @@
 
 void JMP() {
     readSignal();
-    DLout(); PCHin(); AAout(); ALin(); readSignal();
-    DLout(); PCLin();
+    DLout(); PCLin(); AAout(); ALin(); readSignal();
+    DLout(); PCHin();
 }
-
 
 void JMP_RX0() {
     SR(0); Rout(); PCLin();
@@ -25,21 +24,20 @@ void LD_R0_RXn(int8_t n) {
 }
 
 void ST(int8_t Rn) {
-    PCout(); ALin(); readSignal();
+    readSignal();
     DLout(); Xin(); AAout(); ALin(); readSignal();
     AAout(); PCin();
-    DLout(); ALLin();
-    RepX(); ALUout(); ALHin();
+    DLout(); ALHin();
+    RepX(); ALUout(); ALLin();
     SR(Rn); Rout(); DLin(); writeSignal();
 }
 
 void LD(int8_t Rn) {
-    PCout(); ALin(); readSignal();
+    readSignal();
     DLout(); Xin(); AAout(); ALin(); readSignal();
-    AAout(); PCin();
-    DLout(); ALLin();
-    RepX(); ALUout(); ALHin(); readSignal();
-    DLout(); SR(Rn); Rin();
+    AAout(); PCin(); DLout(); ALHin();
+    RepX(); ALUout(); ALLin(); readSignal();
+    DLout(); SR(Rn); Rin(); 
 }
 
 void MV_ARG(int8_t Rn) {
@@ -90,9 +88,4 @@ void SWP(int8_t Rn, int8_t Rm) {
 void MV_Rn_Rm(int8_t Rn, int8_t Rm) {
     SR(Rm); Rout();
     SR(Rn); Rin();
-}
-
-void NOP() {
-    PCout(); ALin();
-    AAout(); PCin();
 }
