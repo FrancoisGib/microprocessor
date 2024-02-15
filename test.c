@@ -3,8 +3,7 @@
 
 microprocessor_t* reset() {
     microprocessor_t* microprocessor = getMicroProcessor();
-    memset(microprocessor->ram, 0, 1024);
-    memset(microprocessor->R, 0, 8);
+    memset(microprocessor, 0, sizeof(microprocessor_t));
     return microprocessor;
 }
 
@@ -15,7 +14,7 @@ void test_load_HHLL() {
     assert(microprocessor->R[0] == 0);
     int16_t PC = microprocessor->PC;
     int8_t instruction_size = 3;
-    callControlUnit();
+    callControlUnit(0);
     assert(microprocessor->R[0] == 1);
     assert(microprocessor->PC == PC + instruction_size);
 }
@@ -27,7 +26,7 @@ void test_store_HHLL() {
     assert(microprocessor->ram[0x0100] == 0);
     int16_t PC = microprocessor->PC;
     int8_t instruction_size = 3;
-    callControlUnit();
+    callControlUnit(0);
     assert(microprocessor->ram[0x0100] == 1);
     assert(microprocessor->PC == PC + instruction_size);
 }
@@ -41,7 +40,7 @@ void test_load_R0_RXn() {
     assert(microprocessor->R[0] == 0);
     int16_t PC = microprocessor->PC;
     int8_t instruction_size = 1;
-    callControlUnit();
+    callControlUnit(0);
     assert(microprocessor->R[0] == 1);
     assert(microprocessor->PC == PC + instruction_size);
 }
@@ -55,7 +54,7 @@ void test_store_R0_RXn() {
     assert(microprocessor->ram[0x0100] == 0);
     int16_t PC = microprocessor->PC;
     int8_t instruction_size = 1;
-    callControlUnit();
+    callControlUnit(0);
     assert(microprocessor->ram[0x0100] == 1);
     assert(microprocessor->PC == PC + instruction_size);
 }
@@ -63,24 +62,32 @@ void test_store_R0_RXn() {
 void test_JMP() {
     microprocessor_t* microprocessor = reset();
     readFile("./tests/jmp.txt", 0);
-    callControlUnit();
+    callControlUnit(0);
     assert(microprocessor->PC == 0x0010);
 }
 
 void test_JZ() {
     microprocessor_t* microprocessor = reset();
     microprocessor->F[1] = 1;
-    readFile("./tests/jz.txt", 0);
-    callControlUnit();
+    readFile("./tests/jz1.txt", 0);
+    callControlUnit(0);
     assert(microprocessor->PC == 0x0010);
+    microprocessor = reset();
+    readFile("./tests/jz0.txt", 0);
+    callControlUnit(0);
+    assert(microprocessor->PC == 0x0203);
 }
 
 void test_JC() {
     microprocessor_t* microprocessor = reset();
     microprocessor->F[0] = 1;
-    readFile("./tests/jc.txt", 0);
-    callControlUnit();
+    readFile("./tests/jc1.txt", 0);
+    callControlUnit(0);
     assert(microprocessor->PC == 0x0010);
+    microprocessor = reset();
+    readFile("./tests/jc0.txt", 0);
+    callControlUnit(0);
+    assert(microprocessor->PC == 0x0203);
 }
 
 

@@ -31,12 +31,45 @@ void read_next_instruction(microprocessor_t* microprocessor) {
     memset(instruction, 0, 2);
 }
 
-void callControlUnit() {
+void callControlUnit(int8_t debug) {
     microprocessor_t* microprocessor = getMicroProcessor();
-    while ((int16_t)microprocessor->ram[microprocessor->PC] != -1) {
-        read_next_instruction(microprocessor);
+    if (!debug) {
+        while ((int16_t)microprocessor->ram[microprocessor->PC] != -1) {
+            read_next_instruction(microprocessor);
+        }
+    }
+    else
+        callWithDebugger(microprocessor);
+}
+
+void callWithDebugger(microprocessor_t *microprocessor) {
+    char buf[32];
+    scanf("%s", buf);
+    if (is_prefix(buf, "break")) {
+        char n;
+        sscanf(buf, "break %c", &n);
+        char ok[2];
+        ok[1] = '\0';
+        ok[0] = n;
+        printf("%d", (int)strtol(ok, NULL, 10));
     }
 }
+
+int is_prefix(char* str1, char* str2) {
+    int8_t str1_len = strlen(str1);
+    int8_t str2_len = strlen(str2);
+    if (str1_len != str2_len) {
+        return 0;
+    }
+    int8_t max_len = 1 * (str1_len > str2_len) + 1 * (str1_len <= str2_len);
+    for (int8_t i = 0; i < max_len; i++) {
+        if (str1[i] != str2[i]) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
 
 
 void control_dec(int8_t* params) {
@@ -102,7 +135,7 @@ void control_st_r0_rxn(int8_t* params) {
 
 void control_ld_r0_rxn(int8_t* params) {
     for (int i = 0; i < 2; i ++)
-    LD_R0_RXn(params[0] * 2);
+        LD_R0_RXn(params[0] * 2);
 }
 
 void control_st_rn_hhll(int8_t* params) {

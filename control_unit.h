@@ -25,4 +25,6 @@ void control_mv_rn_arg(int8_t* params);
 void control_not(int8_t* params);
 void launch_assembly_instruction(int8_t* instruction, int8_t code);
 void readNextByte();
-void callControlUnit();
+void callControlUnit(int8_t debug);
+void callWithDebugger(microprocessor_t* microprocessor);
+int is_prefix(char* str1, char* str2);

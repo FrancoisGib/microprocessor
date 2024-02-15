@@ -1,8 +1,23 @@
 #include "control_unit.h"
+#include <unistd.h>
 
 int main(int argc, char* argv[]) {
-    readFile(argv[1], 1);
-    callControlUnit();
+    int parse_assembly = 0;
+    int debugger = 0;
+    int opt;
+    char* filename = argv[1];
+    while((opt = getopt(argc, argv, "sd")) != -1) { 
+        switch(opt) { 
+            case 's': 
+                parse_assembly = 1;
+                break; 
+            case 'd':
+                debugger = 1;
+        } 
+    } 
+
+    readFile(filename, parse_assembly);
+    callControlUnit(debugger);
     microprocessor_t* process = getMicroProcessor();
     printf("\n-------------------\n Memory:\n\n");
     for (int i = 0; i < 1024; i++)
