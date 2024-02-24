@@ -16,8 +16,8 @@ int main(int argc, char* argv[]) {
         } 
     } 
 
-    readFile(filename, parse_assembly);
-    callControlUnit(debugger);
+    int last_instruction_address = readFile(filename, parse_assembly);
+    callControlUnit(debugger, last_instruction_address);
     microprocessor_t* process = getMicroProcessor();
     printf("\n-------------------\n Memory:\n\n");
     for (int i = 0; i < 1024; i++)

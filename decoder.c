@@ -44,7 +44,7 @@ void test_all_instructions() {
     }
 }
 
-void readFile(char* path, int8_t write) {
+int readFile(char* path, int8_t write) {
     microprocessor_t* process = getMicroProcessor();
     int8_t last_instruction_size;
     int16_t last_intruction_address;
@@ -116,4 +116,5 @@ void readFile(char* path, int8_t write) {
     fclose(input);
     if (write)
         fclose(output);
+    return last_intruction_address;
 }

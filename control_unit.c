@@ -31,7 +31,7 @@ void read_next_instruction(microprocessor_t* microprocessor) {
     memset(instruction, 0, 2);
 }
 
-void callControlUnit(int8_t debug) {
+void callControlUnit(int8_t debug, int last_instruction_address) {
     microprocessor_t* microprocessor = getMicroProcessor();
     if (!debug) {
         while ((int16_t)microprocessor->ram[microprocessor->PC] != -1) {
@@ -39,28 +39,101 @@ void callControlUnit(int8_t debug) {
         }
     }
     else
-        callWithDebugger(microprocessor);
+        callWithDebugger(microprocessor, last_instruction_address);
 }
 
-void callWithDebugger(microprocessor_t *microprocessor) {
-    char buf[32];
-    scanf("%s", buf);
-    if (is_prefix(buf, "break")) {
-        char n;
-        sscanf(buf, "break %c", &n);
-        char ok[2];
-        ok[1] = '\0';
-        ok[0] = n;
-        printf("%d", (int)strtol(ok, NULL, 10));
+typedef struct node_s node_t;
+
+struct node_s {
+    int ptr;
+    node_t* next;
+};
+
+
+typedef struct {
+    node_t* root;
+} fifo_t;
+
+void addElement(fifo_t* fifo, int ptr) {
+    node_t* new_node = (node_t*)malloc(sizeof(node_t));
+    new_node->ptr = ptr;
+    if (fifo->root == NULL)
+        fifo->root = new_node;
+    else {
+        node_t* node = fifo->root;
+        while (node->next != NULL)
+            node = node->next;
+        node->next = new_node;
     }
+}
+
+void next(fifo_t* fifo) {
+    node_t* root = fifo->root;
+    fifo->root = fifo->root->next;
+    free(root);
+}
+
+void callWithDebugger(microprocessor_t *microprocessor, int last_instruction_address) {
+    char buf[32];
+    printf("\n%4X", microprocessor->PC);
+    fifo_t* fifo = (fifo_t*)malloc(sizeof(fifo_t));
+    fifo->root = NULL;
+    int end = 0;
+    while (!end) {
+        int i = 0;
+        while ((buf[i] = getchar()) != '\n')
+            i++;
+        if (is_prefix(buf, "break")) {
+            int n;
+            sscanf(&buf[6], "%04X", &n);
+            printf("\nNew break point at %04X\n", n);
+            addElement(fifo, n);
+        }
+        else if (is_prefix(buf, "run")) {
+            int16_t break_point;
+            if (fifo->root != NULL) {
+                break_point = fifo->root->ptr;
+                next(fifo);
+            }
+            else
+                break_point = last_instruction_address;
+            while (microprocessor->PC != break_point) 
+                read_next_instruction(microprocessor);
+        }
+        else if (is_prefix(buf, "info-registers"))
+            print_registers(microprocessor);
+        else if (is_prefix(buf, "end"))
+            end = 1;
+        else 
+            printf("Invalid command, please retry\n");
+        if (last_instruction_address == microprocessor->PC)
+            end = 1;
+        memset(buf, 0, i);
+    }
+    free(fifo);
+}
+
+void print_registers(microprocessor_t* microprocessor) {
+    printf("\n-------------------\n Registers:\n\n");
+    for (int i = 0; i < 8; i++)
+        printf(" - R%d = %.2X\n", i, microprocessor->R[i]);
+    printf("\n - PC = %.4X\n", (uint16_t)microprocessor->PC);
+    printf(" - Data Latch = %.2X\n", (uint8_t)microprocessor->DL);
+    printf(" - Data Bus = %.2X\n", (uint8_t)microprocessor->dataBus);
+    printf(" - Address Latch = %.4X\n", (uint16_t)microprocessor->AL);
+    printf(" - Address Bus = %.4X\n", (uint16_t)microprocessor->addressBus);
+    printf(" - CS = %.2X\n", microprocessor->CS);
+    printf(" - IR = %.2X\n", (uint8_t)microprocessor->IR);
+    printf(" - X = %.2X\n", microprocessor->X);
+    printf(" - Y = %.2X\n", microprocessor->Y);
+    printf("\n-------------------\n Flags:\n\n");
+    printf(" - FC = %d\n", microprocessor->F[0]);
+    printf(" - FZ = %d\n\n", microprocessor->F[1]);
 }
 
 int is_prefix(char* str1, char* str2) {
     int8_t str1_len = strlen(str1);
     int8_t str2_len = strlen(str2);
-    if (str1_len != str2_len) {
-        return 0;
-    }
     int8_t max_len = 1 * (str1_len > str2_len) + 1 * (str1_len <= str2_len);
     for (int8_t i = 0; i < max_len; i++) {
         if (str1[i] != str2[i]) {

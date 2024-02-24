@@ -34,6 +34,6 @@ typedef struct {
 int8_t decodeOpcode(int8_t byte);
 int16_t hex_to_dec(char *hex);
 void test_all_instructions();
-void readFile(char* path, int8_t write);
+int readFile(char* path, int8_t write);
 int main(int argc, char* argv[]);
 instruction_informations* get_instruction_informations();
