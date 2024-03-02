@@ -4,20 +4,20 @@ instruction_informations instructions_info[NB_INSTRUCTIONS] = {
     {0b01110000,0b11111111, 8, 3, "jmp %.2X%.2X", 8, 2, {{1, 255}, {2, 255}}}, 
     {0b01110001,0b11111111, 8, 3, "jz %.2X%.2X", 7, 2, {{1, 255}, {2, 255}}},
     {0b01110010,0b11111111, 8, 3, "jc %.2X%.2X", 7, 2, {{1, 255}, {2, 255}}},
-    {0b01110011,0b11111111, 8, 1, "jmp RX0", 7, 0},
-    {0b01111011,0b11111100, 6, 1, "st R0, RX%d", 10, 1, {{0, 3}}},
-    {0b01111111,0b11111100, 6, 1, "ld R0, RX%d", 10, 1, {{0, 3}}},
-    {0b01000111,0b11111000, 5, 3, "st R%d, %.2X%.2X", 11, 3, {{0, 7}, {1, 255}, {2, 255}}},
-    {0b01001111,0b11111000, 5, 3, "ld R%d, %.2X%.2X", 11, 3, {{0, 7}, {1, 255}, {2, 255}}},
-    {0b01010111,0b11111000, 5, 2, "mv R%d, $%d", 9, 2, {{0, 7}, {1, 255}}},
-    {0b01011111,0b11111000, 5, 1, "dec R%d", 6, 1, {{0, 7}}}, 
-    {0b01100111,0b11111000, 5, 1, "inc R%d", 6, 1, {{0, 7}}},
-    {0b01101111,0b11111000, 5, 1, "not R%d", 6, 1, {{0, 7}}},
-    {0b10011111,0b11100000, 3, 1, "add R%d, R%d", 10, 2, {{0, 3, 3}, {0, 7}}},
-    {0b10111111,0b11100000, 3, 1, "sub R%d, R%d", 10, 2, {{0, 3, 3}, {0, 7}}},
-    {0b11011111,0b11100000, 3, 1, "and R%d, R%d", 10, 2, {{0, 3, 3}, {0, 7}}},
-    {0b11111111,0b11100000, 3, 1, "swp R%d, R%d", 10, 2, {{0, 3, 3}, {0, 7}}},
-    {0b00111111,0b11000000, 2, 1, "mv R%d, R%d", 9, 2, {{0, 7, 3}, {0, 7}}}
+    {0b01110011,0b11111111, 8, 1, "jmp %%RX0", 8, 0},
+    {0b01111011,0b11111100, 6, 1, "st %%R0, %%RX%d", 12, 1, {{0, 3}}},
+    {0b01111111,0b11111100, 6, 1, "ld %%R0, %%RX%d", 12, 1, {{0, 3}}},
+    {0b01000111,0b11111000, 5, 3, "st %%R%d, %.2X%.2X", 12, 3, {{0, 7}, {1, 255}, {2, 255}}},
+    {0b01001111,0b11111000, 5, 3, "ld %%R%d, %.2X%.2X", 12, 3, {{0, 7}, {1, 255}, {2, 255}}},
+    {0b01010111,0b11111000, 5, 2, "mv %%R%d, $%d", 10, 2, {{0, 7}, {1, 255}}},
+    {0b01011111,0b11111000, 5, 1, "dec %%R%d", 7, 1, {{0, 7}}}, 
+    {0b01100111,0b11111000, 5, 1, "inc %%R%d", 7, 1, {{0, 7}}},
+    {0b01101111,0b11111000, 5, 1, "not %%R%d", 7, 1, {{0, 7}}},
+    {0b10011111,0b11100000, 3, 1, "add %%R%d, %%R%d", 12, 2, {{0, 3, 3}, {0, 7}}},
+    {0b10111111,0b11100000, 3, 1, "sub %%R%d, %%R%d", 12, 2, {{0, 3, 3}, {0, 7}}},
+    {0b11011111,0b11100000, 3, 1, "and %%R%d, %%R%d", 12, 2, {{0, 3, 3}, {0, 7}}},
+    {0b11111111,0b11100000, 3, 1, "swp %%R%d, %%R%d", 12, 2, {{0, 3, 3}, {0, 7}}},
+    {0b00111111,0b11000000, 2, 1, "mv %%R%d, %%R%d", 11, 2, {{0, 7, 3}, {0, 7}}}
 };
 
 instruction_informations* get_instruction_informations() {
@@ -26,7 +26,7 @@ instruction_informations* get_instruction_informations() {
 
 int8_t decodeOpcode(int8_t byte) {
     for (int i = 0; i < NB_INSTRUCTIONS; ++i) {
-        if ((instructions_info[i].code & instructions_info[i].mask) == (byte & instructions_info[i].mask)) 
+        if ((instructions_info[i].code & instructions_info[i].mask) == (byte & instructions_info[i].mask))
             return i;
     }
     return -1;
@@ -44,7 +44,7 @@ void test_all_instructions() {
     }
 }
 
-int readFile(char* path, int8_t write) {
+int readFile(char* path, int8_t write, FILE* output) {
     microprocessor_t* process = getMicroProcessor();
     int8_t last_instruction_size;
     int16_t last_intruction_address;
@@ -53,9 +53,6 @@ int readFile(char* path, int8_t write) {
         perror("Error opening input file ");
         exit(0);
     }
-    FILE* output;
-    if (write)
-        output = fopen("output.txt", "w");
     size_t read_bytes = 1;
     char memory_buffer[5];
     char buf[3];
@@ -66,16 +63,19 @@ int readFile(char* path, int8_t write) {
     while (strcmp(memory_buffer, "FFFF") != 0) {
         fseek(input, 3, SEEK_CUR); // pass ":  "
         read_bytes = fread(buf, 2, 1, input);
+        buf[2] = '\0';
         int8_t first_byte = hex_to_dec(buf);
         int8_t opcode = decodeOpcode(first_byte);
         instruction.opcode = opcode;
         instruction_informations instruction_info = instructions_info[opcode];
         last_instruction_size = instruction_info.nb_bytes;
         last_intruction_address = instruction.memory_address;
-        instruction.args = (int8_t*)malloc(8 * instruction_info.nb_args);
+        if (instruction_info.nb_args > 0)
+            instruction.args = (int8_t*)malloc(8 * instruction_info.nb_args);
         instruction.bytes = (int8_t*)malloc(8 * instruction_info.nb_bytes);
         instruction.bytes[0] = first_byte;
         int8_t i;
+
         fseek(input, 1, SEEK_CUR); // pass " "
         process->ram[last_intruction_address] = instruction.bytes[0];
         for (i = 1; i < instruction_info.nb_bytes; i++) {
@@ -92,6 +92,7 @@ int readFile(char* path, int8_t write) {
         switch (instruction_info.nb_args) {
             case 0:
                 strcpy(instruction_buffer, instruction_info.assembly_string);
+                break;
             case 1:
                 sprintf(instruction_buffer, instruction_info.assembly_string, instruction.args[0]);
                 break;
@@ -104,7 +105,8 @@ int readFile(char* path, int8_t write) {
                 printf("Error in the file\n");
                 exit(0);
         }
-        free(instruction.args);
+        if (instruction_info.nb_args > 0)
+            free(instruction.args);
         free(instruction.bytes);
         instruction_buffer[instruction_info.string_size] = '\n';
         if (write)
@@ -113,8 +115,7 @@ int readFile(char* path, int8_t write) {
         instruction.memory_address = hex_to_dec(memory_buffer);
     }
     memset(&process->ram[last_intruction_address + last_instruction_size], 0xFF, 2);
+    fseek(input, 0, SEEK_SET); // in case we read the file again
     fclose(input);
-    if (write)
-        fclose(output);
     return last_intruction_address;
 }

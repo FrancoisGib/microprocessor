@@ -14,8 +14,9 @@ typedef struct {
     int8_t IR;
     int8_t X;
     int8_t Y;
-    ALUop ALUcom;
-    int8_t F[2];
+    int8_t ALUcom;
+    int8_t FZ;
+    int8_t FC;
     int8_t ram[1024];
 } microprocessor_t;
 

@@ -4,27 +4,44 @@
 int main(int argc, char* argv[]) {
     int parse_assembly = 0;
     int debugger = 0;
-    int opt;
-    char* filename = argv[1];
-    while((opt = getopt(argc, argv, "sd")) != -1) { 
-        switch(opt) { 
-            case 's': 
-                parse_assembly = 1;
-                break; 
-            case 'd':
-                debugger = 1;
-        } 
-    } 
-
-    int last_instruction_address = readFile(filename, parse_assembly);
-    callControlUnit(debugger, last_instruction_address);
+    fifo_t* program_names = init_fifo();
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-s") == 0) {
+            parse_assembly = 1;
+        }
+        else if (strcmp(argv[i], "-d") == 0) {
+            debugger = 1;
+        }
+        else {
+            addElement(program_names, argv[i], sizeof(argv[i]));
+        }
+    }
+    FILE* output;
+    if (parse_assembly)
+        output = fopen("output.txt", "w");
+    if (program_names->size == 0)
+        exit(0);
+    while (!is_empty(program_names)) {
+        void* ptr = next(program_names);
+        char* filename = (char*)ptr;
+        printf("file %s\n", filename);
+        int last_instruction_address = readFile(filename, parse_assembly, output);
+        callControlUnit(debugger, last_instruction_address);
+        free(ptr);
+        fwrite("\n", 1, 1, output);
+    }
+    free(program_names);
+    if (parse_assembly)
+        fclose(output);
+        
+    int i;
     microprocessor_t* process = getMicroProcessor();
     printf("\n-------------------\n Memory:\n\n");
-    for (int i = 0; i < 1024; i++)
+    for (i = 0; i < 1024; i++)
         printf("%02X ", (uint8_t)process->ram[i]);
     printf("\n\n-------------------\n Registers:\n\n");
-    for (int i = 0; i < 8; i++)
-        printf(" - R%d = %.2X\n", i, process->R[i]);
+    for (i = 0; i < 8; i++)
+        printf(" - R%d = %d\n", i, process->R[i]);
     printf("\n - PC = %.4X\n", (uint16_t)process->PC);
     printf(" - Data Latch = %.2X\n", (uint8_t)process->DL);
     printf(" - Data Bus = %.2X\n", (uint8_t)process->dataBus);
@@ -35,7 +52,7 @@ int main(int argc, char* argv[]) {
     printf(" - X = %.2X\n", process->X);
     printf(" - Y = %.2X\n", process->Y);
     printf("\n-------------------\n Flags:\n\n");
-    printf(" - FC = %d\n", process->F[0]);
-    printf(" - FZ = %d\n", process->F[1]);
+    printf(" - FC = %d\n", process->FC);
+    printf(" - FZ = %d\n", process->FZ);
     return 0;
 }

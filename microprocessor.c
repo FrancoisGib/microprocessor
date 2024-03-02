@@ -83,36 +83,41 @@ void ALUout() {
 // Micro-instructions for ALU
 
 void addALU() {
-    microprocessor.ALUcom = (microprocessor.X + microprocessor.Y);
-    if (microprocessor.X + microprocessor.Y > 255)
-        microprocessor.F[0] = 1;
+    microprocessor.ALUcom = microprocessor.X + microprocessor.Y;
+    if (microprocessor.ALUcom > 127)
+        microprocessor.FC = 1;
     else
-        microprocessor.F[0] = 0;
+        microprocessor.FC = 0;
 }
 
 void subALU() {
-    microprocessor.ALUcom = (microprocessor.X - microprocessor.Y);
-    if (microprocessor.X - microprocessor.Y < 0)
-        microprocessor.F[0] = 1;
+    microprocessor.ALUcom = microprocessor.X - microprocessor.Y;
+    if (microprocessor.ALUcom < -127)
+        microprocessor.FC = 1;
     else
-        microprocessor.F[0] = 0;
+        microprocessor.FC = 0;
 }
 
 void incALU() {
-    microprocessor.ALUcom = (microprocessor.X + 1);
+    microprocessor.ALUcom = microprocessor.X + 1;
+    if (microprocessor.ALUcom == 0) {
+        microprocessor.FZ = 1;
+    }
+    else
+        microprocessor.FZ = 0;
 }
 
 void decALU() {
-    microprocessor.ALUcom = (microprocessor.X - 1);
-    if (microprocessor.X == 0) {
-        microprocessor.F[1] = 1;
+    microprocessor.ALUcom = microprocessor.X - 1;
+    if (microprocessor.ALUcom == 0) {
+        microprocessor.FZ = 1;
     }
     else
-        microprocessor.F[1] = 0;
+        microprocessor.FZ = 0;
 }
 
 void notALU() {
-    microprocessor.ALUcom = (~microprocessor.X);
+    microprocessor.ALUcom = ~microprocessor.X;
 }
 
 void RepX() {
@@ -124,11 +129,11 @@ void RepY() {
 }
 
 void andALU() {
-    microprocessor.ALUcom = (microprocessor.X & microprocessor.Y);
+    microprocessor.ALUcom = microprocessor.X & microprocessor.Y;
     if (microprocessor.ALUcom == 0)
-        microprocessor.F[1] = 1;
+        microprocessor.FZ = 1;
     else
-        microprocessor.F[1] = 0;
+        microprocessor.FZ = 0;
 }
 
 // IR signals

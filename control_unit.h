@@ -6,6 +6,23 @@ typedef struct {
 
 typedef void (*assembly_function)(int8_t* params);
 
+typedef struct node_s node_t;
+
+struct node_s {
+    void* ptr;
+    node_t* next;
+};
+
+typedef struct {
+    node_t* root;
+    int8_t size;
+} fifo_t;
+
+void addElement(fifo_t* fifo, void* value, int8_t size);
+void* next(fifo_t* fifo);
+int is_empty(fifo_t* fifo);
+fifo_t* init_fifo();
+
 void control_dec(int8_t* params);
 void control_inc(int8_t* params);
 void control_add(int8_t* params);
@@ -29,3 +46,4 @@ void callControlUnit(int8_t debug, int last_instruction_address);
 void callWithDebugger(microprocessor_t *microprocessor, int last_instruction_address);
 int is_prefix(char* str1, char* str2);
 void print_registers(microprocessor_t* microprocessor);
+void print_ram(microprocessor_t* microprocessor);

@@ -1,6 +1,7 @@
 #include "microprocessor.h"
+#include <string.h>
 
-void JMP();
+void JMP(int8_t status);
 void JMP_RX0();
 void ST_R0_RXn(int8_t n);
 void LD_R0_RXn(int8_t n);
