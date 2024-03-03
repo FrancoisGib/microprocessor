@@ -44,7 +44,7 @@ void test_all_instructions() {
     }
 }
 
-int readFile(char* path, int8_t write, FILE* output) {
+int16_t readFile(char* path, int8_t write, FILE* output) {
     microprocessor_t* process = getMicroProcessor();
     int8_t last_instruction_size;
     int16_t last_intruction_address;
@@ -117,5 +117,5 @@ int readFile(char* path, int8_t write, FILE* output) {
     memset(&process->ram[last_intruction_address + last_instruction_size], 0xFF, 2);
     fseek(input, 0, SEEK_SET); // in case we read the file again
     fclose(input);
-    return last_intruction_address;
+    return last_intruction_address + last_instruction_size;
 }

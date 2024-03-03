@@ -15,13 +15,13 @@ struct node_s {
 
 typedef struct {
     node_t* root;
-    int8_t size;
 } fifo_t;
 
 void addElement(fifo_t* fifo, void* value, int8_t size);
 void* next(fifo_t* fifo);
 int is_empty(fifo_t* fifo);
 fifo_t* init_fifo();
+node_t* create_node(void* value, int8_t size);
 
 void control_dec(int8_t* params);
 void control_inc(int8_t* params);
@@ -43,7 +43,4 @@ void control_not(int8_t* params);
 void launch_assembly_instruction(int8_t* instruction, int8_t code);
 void readNextByte();
 void callControlUnit(int8_t debug, int last_instruction_address);
-void callWithDebugger(microprocessor_t *microprocessor, int last_instruction_address);
-int is_prefix(char* str1, char* str2);
-void print_registers(microprocessor_t* microprocessor);
-void print_ram(microprocessor_t* microprocessor);
+void callWithDebugger(int16_t last_instruction_address);

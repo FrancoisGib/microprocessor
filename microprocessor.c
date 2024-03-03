@@ -1,6 +1,8 @@
 #include "microprocessor.h"
 
 microprocessor_t microprocessor;
+int cycle_count = 0;
+#define READ_WRITE_CYCLE 3
 
 // R registers signals
 
@@ -147,19 +149,50 @@ void IRin() {
 
 void readSignal() {
     microprocessor.DL = microprocessor.ram[microprocessor.AL];
+    cycle_count += READ_WRITE_CYCLE;
 }
 
 void writeSignal() {
     microprocessor.ram[microprocessor.AL] = microprocessor.DL;
+    cycle_count += READ_WRITE_CYCLE;
 }
 
 void readNextByte() {
-    PCout(); ALin(); readSignal();
-    AAout(), PCin(); 
-    DLout(); IRin(); ALin();
+    PCout(); ALin(); readSignal(); cycle_count += 1;
+    AAout(), PCin(); cycle_count += 1;
+    DLout(); IRin(); ALin(); cycle_count += 1;
 }
 
 
 microprocessor_t* getMicroProcessor() {
     return &microprocessor;
+}
+
+int* getCycleCount() {
+    return &cycle_count;
+}
+
+void print_ram() {
+    printf("\n-------------------\n Memory:\n\n");
+    for (int i = 0; i < 1024; i++)
+        printf("%02X ", (uint8_t)microprocessor.ram[i]);
+    printf("\n");
+}
+
+void print_registers() {
+    printf("\n\n-------------------\n Registers:\n\n");
+    for (int i = 0; i < 8; i++)
+        printf(" - R%d = %d\n", i, microprocessor.R[i]);
+    printf("\n - PC = %.4X\n", (uint16_t)microprocessor.PC);
+    printf(" - Data Latch = %.2X\n", (uint8_t)microprocessor.DL);
+    printf(" - Data Bus = %.2X\n", (uint8_t)microprocessor.dataBus);
+    printf(" - Address Latch = %.4X\n", (uint16_t)microprocessor.AL);
+    printf(" - Address Bus = %.4X\n", (uint16_t)microprocessor.addressBus);
+    printf(" - CS = %.2X\n", microprocessor.CS);
+    printf(" - IR = %.2X\n", (uint8_t)microprocessor.IR);
+    printf(" - X = %.2X\n", microprocessor.X);
+    printf(" - Y = %.2X\n", microprocessor.Y);
+    printf("\n-------------------\n Flags:\n\n");
+    printf(" - FC = %d\n", microprocessor.FC);
+    printf(" - FZ = %d\n", microprocessor.FZ);
 }

@@ -64,3 +64,6 @@ void readSignal();
 void writeSignal();
 
 microprocessor_t* getMicroProcessor();
+void print_ram();
+void print_registers();
+int* getCycleCount();
