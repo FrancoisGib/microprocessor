@@ -29,11 +29,11 @@ void PCout() {
     microprocessor.addressBus = microprocessor.PC;
 }
 
-void PCHin() {
+void PCLin() {
     *((int8_t*)&microprocessor.PC) = microprocessor.dataBus;
 }
 
-void PCLin() {
+void PCHin() {
     *((int8_t*)&microprocessor.PC + 1) = microprocessor.dataBus;
 }
 

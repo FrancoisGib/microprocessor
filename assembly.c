@@ -6,9 +6,9 @@
 void JMP(int8_t status) {
     readSignal();
     int8_t pcl = microprocessor->DL;
-    DLout(); PCHin(); AAout(); ALin(); readSignal(); *cycle_count += 1;
+    DLout(); PCLin(); AAout(); ALin(); readSignal(); *cycle_count += 1;
     int8_t pch = microprocessor->DL;
-    DLout(); PCLin(); *cycle_count += 1;
+    DLout(); PCHin(); *cycle_count += 1;
     if (status == 0)
         printf("JMP %.2X%.2X", pcl, pch);
     else if (status == 1)
