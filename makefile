@@ -19,7 +19,5 @@ test: build
 
 clean:
 	rm -rf build
-	rm -f main
-	rm -f test
-	rm -f output.txt
-	
+	rm -f program.ms test main
+	 

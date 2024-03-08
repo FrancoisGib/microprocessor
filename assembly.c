@@ -41,8 +41,8 @@ void LD_R0_RXn(int8_t n) {
 void ST(int8_t Rn) {
     readSignal();
     DLout(); Xin(); AAout(); ALin(); readSignal(); *cycle_count += 1;
-    AAout(); PCin(); DLout(); ALHin(); *cycle_count += 1;
-    RepX(); ALUout(); ALLin(); *cycle_count += 1;
+    AAout(); PCin(); DLout(); ALLin(); *cycle_count += 1;
+    RepX(); ALUout(); ALHin(); *cycle_count += 1;
     SR(Rn); Rout(); DLin(); writeSignal(); *cycle_count += 1;
     printf("ST %%R%d", Rn);
 }
@@ -50,8 +50,8 @@ void ST(int8_t Rn) {
 void LD(int8_t Rn) {
     readSignal();
     DLout(); Xin(); AAout(); ALin(); readSignal(); *cycle_count += 1;
-    AAout(); PCin(); DLout(); ALHin(); *cycle_count += 1;
-    RepX(); ALUout(); ALLin(); readSignal(); *cycle_count += 1;
+    AAout(); PCin(); DLout(); ALLin(); *cycle_count += 1;
+    RepX(); ALUout(); ALHin(); readSignal(); *cycle_count += 1;
     DLout(); SR(Rn); Rin(); *cycle_count += 1;
     printf("LD %%R%d", Rn);
 }

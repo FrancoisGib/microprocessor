@@ -86,27 +86,39 @@ void ALUout() {
 
 void addALU() {
     microprocessor.ALUcom = microprocessor.X + microprocessor.Y;
-    if (microprocessor.ALUcom > 127)
+    if (microprocessor.X + microprocessor.Y > 127)
         microprocessor.FC = 1;
-    else
+    else if (microprocessor.X + microprocessor.Y == 0)
+        microprocessor.FZ = 1;
+    else {
         microprocessor.FC = 0;
+        microprocessor.FZ = 0;
+    }
 }
 
 void subALU() {
     microprocessor.ALUcom = microprocessor.X - microprocessor.Y;
-    if (microprocessor.ALUcom < -127)
+    if (microprocessor.X - microprocessor.Y < -127)
         microprocessor.FC = 1;
-    else
+    else if (microprocessor.X - microprocessor.Y == 0)
+        microprocessor.FZ = 1;
+    else {
         microprocessor.FC = 0;
+        microprocessor.FZ = 0;
+    }
 }
 
 void incALU() {
     microprocessor.ALUcom = microprocessor.X + 1;
-    if (microprocessor.ALUcom == 0) {
+    if (microprocessor.X + 1 == 0) {
         microprocessor.FZ = 1;
     }
-    else
+    else if (microprocessor.X + 1 > 127)
+        microprocessor.FC = 1;
+    else {
+        microprocessor.FC = 0;
         microprocessor.FZ = 0;
+    }
 }
 
 void decALU() {
@@ -114,8 +126,12 @@ void decALU() {
     if (microprocessor.ALUcom == 0) {
         microprocessor.FZ = 1;
     }
-    else
+    else if (microprocessor.X - 1 < -127)
+        microprocessor.FC = 1;
+    else {
+        microprocessor.FC = 0;
         microprocessor.FZ = 0;
+    }
 }
 
 void notALU() {
