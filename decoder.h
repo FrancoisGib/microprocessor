@@ -1,32 +1,40 @@
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <assert.h>
+#include "assembly.h"
+#include <unistd.h>
 
-#define NUM_INSTRUCTIONS 17
+#define NB_INSTRUCTIONS 17
+
+typedef struct {
+    int8_t byte_number;
+    int8_t mask;
+    int8_t shift;
+} argument;
+
+typedef struct {
+    int8_t code;
+    int8_t mask;
+    int8_t code_size; // in bit
+    int8_t nb_bytes;
+    char* assembly_string;
+    int8_t string_size;
+    int8_t nb_args;
+    argument arguments[3];
+} instruction_informations;
 
 typedef struct {
     int8_t opcode;
-    int8_t mask;
-    int8_t(*operation)(int8_t variablePart);
-    int8_t size;
-} Instruction;
+    int16_t memory_address;
+    int8_t* bytes;
+    int8_t* args;
+} instruction_s;
 
-int8_t dec_Rn(int8_t variablePart);
-int8_t inc_Rn(int8_t variablePart);
-int8_t not_Rn(int8_t variablePart);
-int8_t add_Rn_Rm(int8_t variablePart);
-int8_t sub_Rn_Rm(int8_t variablePart);
-int8_t and_Rn_Rm(int8_t variablePart);
-int8_t swp_Rn_Rm(int8_t variablePart);
-int8_t mv_Rn_Rm(int8_t variablePart);
-int8_t jmp_hhll(int8_t variablePart);
-int8_t jz_hhll(int8_t variablePart);
-int8_t jc_hhll(int8_t variablePart);
-int8_t jmp_rx0(int8_t variablePart);
-int8_t st_r0_rxn(int8_t variablePart);
-int8_t ld_r0_rxn(int8_t variablePart);
-int8_t st_rn_hhll(int8_t variablePart);
-int8_t ld_rn_hhll(int8_t variablePart);
-int8_t mv_rn_arg(int8_t variablePart);
-
-int8_t getVariablePartLength(int8_t bitmask);
-int8_t decodeOpcode(int8_t opcode);
+int8_t decodeOpcode(int8_t byte);
+int16_t hex_to_dec(char *hex);
+void test_all_instructions();
+int16_t readFile(char* path, int8_t write, FILE* output);
+int main(int argc, char* argv[]);
+instruction_informations* get_instruction_informations();

@@ -1,6 +1,8 @@
 #include "microprocessor.h"
 
 microprocessor_t microprocessor;
+int cycle_count = 0;
+#define READ_WRITE_CYCLE 3
 
 // R registers signals
 
@@ -27,11 +29,11 @@ void PCout() {
     microprocessor.addressBus = microprocessor.PC;
 }
 
-void PCHin() {
+void PCLin() {
     *((int8_t*)&microprocessor.PC) = microprocessor.dataBus;
 }
 
-void PCLin() {
+void PCHin() {
     *((int8_t*)&microprocessor.PC + 1) = microprocessor.dataBus;
 }
 
@@ -83,27 +85,57 @@ void ALUout() {
 // Micro-instructions for ALU
 
 void addALU() {
-    microprocessor.ALUcom = (microprocessor.X + microprocessor.Y);
+    microprocessor.ALUcom = microprocessor.X + microprocessor.Y;
+    if (microprocessor.X + microprocessor.Y > 127)
+        microprocessor.FC = 1;
+    else if (microprocessor.X + microprocessor.Y == 0)
+        microprocessor.FZ = 1;
+    else {
+        microprocessor.FC = 0;
+        microprocessor.FZ = 0;
+    }
 }
 
 void subALU() {
-    microprocessor.ALUcom = (microprocessor.X - microprocessor.Y);
-}
-
-void multALU() {
-    microprocessor.ALUcom = (microprocessor.X * microprocessor.Y);
-}
-
-void divALU() {
-    microprocessor.ALUcom = (microprocessor.X / microprocessor.Y);
+    microprocessor.ALUcom = microprocessor.X - microprocessor.Y;
+    if (microprocessor.X - microprocessor.Y < -127)
+        microprocessor.FC = 1;
+    else if (microprocessor.X - microprocessor.Y == 0)
+        microprocessor.FZ = 1;
+    else {
+        microprocessor.FC = 0;
+        microprocessor.FZ = 0;
+    }
 }
 
 void incALU() {
-    microprocessor.ALUcom = (microprocessor.X + 1);
+    microprocessor.ALUcom = microprocessor.X + 1;
+    if (microprocessor.X + 1 == 0) {
+        microprocessor.FZ = 1;
+    }
+    else if (microprocessor.X + 1 > 127)
+        microprocessor.FC = 1;
+    else {
+        microprocessor.FC = 0;
+        microprocessor.FZ = 0;
+    }
 }
 
 void decALU() {
-    microprocessor.ALUcom = (microprocessor.X - 1);
+    microprocessor.ALUcom = microprocessor.X - 1;
+    if (microprocessor.ALUcom == 0) {
+        microprocessor.FZ = 1;
+    }
+    else if (microprocessor.X - 1 < -127)
+        microprocessor.FC = 1;
+    else {
+        microprocessor.FC = 0;
+        microprocessor.FZ = 0;
+    }
+}
+
+void notALU() {
+    microprocessor.ALUcom = ~microprocessor.X;
 }
 
 void RepX() {
@@ -114,6 +146,13 @@ void RepY() {
     microprocessor.ALUcom = microprocessor.Y;
 }
 
+void andALU() {
+    microprocessor.ALUcom = microprocessor.X & microprocessor.Y;
+    if (microprocessor.ALUcom == 0)
+        microprocessor.FZ = 1;
+    else
+        microprocessor.FZ = 0;
+}
 
 // IR signals
 
@@ -126,12 +165,50 @@ void IRin() {
 
 void readSignal() {
     microprocessor.DL = microprocessor.ram[microprocessor.AL];
+    cycle_count += READ_WRITE_CYCLE;
 }
 
 void writeSignal() {
     microprocessor.ram[microprocessor.AL] = microprocessor.DL;
+    cycle_count += READ_WRITE_CYCLE;
 }
+
+void readNextByte() {
+    PCout(); ALin(); readSignal(); cycle_count += 1;
+    AAout(), PCin(); cycle_count += 1;
+    DLout(); IRin(); ALin(); cycle_count += 1;
+}
+
 
 microprocessor_t* getMicroProcessor() {
     return &microprocessor;
+}
+
+int* getCycleCount() {
+    return &cycle_count;
+}
+
+void print_ram() {
+    printf("\n-------------------\n Memory:\n\n");
+    for (int i = 0; i < 1024; i++)
+        printf("%02X ", (uint8_t)microprocessor.ram[i]);
+    printf("\n");
+}
+
+void print_registers() {
+    printf("\n\n-------------------\n Registers:\n\n");
+    for (int i = 0; i < 8; i++)
+        printf(" - R%d = %d\n", i, microprocessor.R[i]);
+    printf("\n - PC = %.4X\n", (uint16_t)microprocessor.PC);
+    printf(" - Data Latch = %.2X\n", (uint8_t)microprocessor.DL);
+    printf(" - Data Bus = %.2X\n", (uint8_t)microprocessor.dataBus);
+    printf(" - Address Latch = %.4X\n", (uint16_t)microprocessor.AL);
+    printf(" - Address Bus = %.4X\n", (uint16_t)microprocessor.addressBus);
+    printf(" - CS = %.2X\n", microprocessor.CS);
+    printf(" - IR = %.2X\n", (uint8_t)microprocessor.IR);
+    printf(" - X = %.2X\n", microprocessor.X);
+    printf(" - Y = %.2X\n", microprocessor.Y);
+    printf("\n-------------------\n Flags:\n\n");
+    printf(" - FC = %d\n", microprocessor.FC);
+    printf(" - FZ = %d\n", microprocessor.FZ);
 }

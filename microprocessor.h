@@ -1,21 +1,23 @@
 #include <stdint.h>
+#include <stdio.h>
 
 typedef int8_t (*ALUop)(int8_t param);
 
 typedef struct {
-    int8_t R[8];
-    int8_t CS;
     int16_t PC;
     int8_t DL;
     int16_t AL;
     int8_t dataBus;
     int16_t addressBus;
+    int8_t R[8];
+    int8_t CS;
     int8_t IR;
     int8_t X;
     int8_t Y;
-    ALUop ALUcom;
+    int8_t ALUcom;
+    int8_t FZ;
+    int8_t FC;
     int8_t ram[1024];
-    int8_t controlUnit[3];
 } microprocessor_t;
 
 // R registers signals
@@ -49,10 +51,10 @@ void ALUout();
 // Micro-instructions for ALU
 void addALU();
 void subALU();
-void multALU();
-void divALU();
 void incALU();
 void decALU();
+void andALU();
+void notALU();
 
 // IR signals
 void IRin();
@@ -62,3 +64,6 @@ void readSignal();
 void writeSignal();
 
 microprocessor_t* getMicroProcessor();
+void print_ram();
+void print_registers();
+int* getCycleCount();
