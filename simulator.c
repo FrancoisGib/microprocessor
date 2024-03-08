@@ -1,7 +1,9 @@
 #include "simulator.h"
 #include <ctype.h>
-
-
+#define MAX_COMMAND_LENGTH 100
+#define MAX_BREAKPOINTS 10
+int breakpointCounter = 0;
+info_break info[10];
 int findInstructionStart(int8_t* hasInstruction){
     for (int i = 0; i < 1024; i++){
         if(hasInstruction[i] != 0){
@@ -51,6 +53,19 @@ char* getRegisters(microprocessor_t* proc){
         strcat(result,temp);
     }
     return result;
+}
+void displayAsmInstructions(microprocessor_t* proc,int start,int end,int instructionLength){
+    proc->PC = start;
+    int counter = 1;
+    while(proc->PC != end){
+        fetchInstruction(proc);
+        char* str = decodeInstruction(proc);
+        if(counter < instructionLength){
+            printf("[%d]: %s\n",counter,str);
+            counter++;
+        }
+        free(str);           
+    }
 }
 
 //Ouais bon il ya un début à tout God Bless les malloc et bonne lecture
@@ -105,14 +120,61 @@ void launchInDebugMode(microprocessor_t* proc){
     free(instructionLength);
 }
 
+void handleRun(microprocessor_t* proc){
+    while
+}
+void launchDebugModev2(microprocessor_t* proc){
+    int* instructionLength = fillMemory(proc->ram,proc->hasInstruction,1024);
+    int start = findInstructionStart(proc->ram);
+    int end = findInstructionEnd(proc->hasInstruction,start);
+    char cmd[MAX_COMMAND_LENGTH];
+    if(start != -1){
+        displayAsmInstructions(proc,start,end,*instructionLength);
+        proc->PC = start;
+        while(1){
+            printf("> ");
+            scanf(" %[^\n]", cmd);
+            handleBreakPoint(cmd,proc,*instructionLength,start);
+            handleRun(proc);
+            if (strcmp(cmd, "quit") == 0) {
+            printf("Exiting debugger.\n");
+            break;
+            }
+        }
+    }
+    free(instructionLength);
+}
+
+
+void handleBreakPoint(const char* cmd,microprocessor_t* proc,int size,int start){
+    if (strncmp(cmd, "break ", 6) == 0) {
+        int breakpoint = atoi(cmd+ 6);
+        if(breakpoint != 0){
+            int16_t addr = start + (breakpoint -1);
+            if(breakpoint < size){
+                info[breakpointCounter].num  = breakpointCounter+1;
+                info[breakpointCounter].addr = addr;
+                info[breakpointCounter].line = breakpoint;
+                printf("Breakpoint %d at 0x%hx: line %d\n",++breakpointCounter,addr,breakpoint);
+            }
+            else{
+                printf("Invalid input: Breakpoint exceeds maximum allowed value\n");
+            }
+        }
+        else{
+            printf("Invalid input: Not an integer\n");
+        }
+    }
+}
+
 //affichage de du mode debugger
 void runDebugModeController(debuggerRegistry* registry,int size){
-    printf("Enter the index you want to break at\n");
     printf("Index | Instruction\n");
     printf("-----------------\n");
     char input[20];
     displayDebugMode(registry,size);
     while(1){
+    printf("Enter the index you want to break at: \n");
         scanf("%s",input);
         int breakpoint = atoi(input);
         if(breakpoint != 0 || strcmp(input,"0") == 0){
@@ -141,7 +203,6 @@ void launchInNormalMode(microprocessor_t* proc){
     displayMemory(proc->ram,proc->hasInstruction,1024);
     int start = findInstructionStart(proc->ram);
     int end = findInstructionEnd(proc->hasInstruction,start);
-    
     if(start != -1){
         proc->PC = start;
         FILE *output = fopen("output.s","w");
@@ -180,7 +241,7 @@ void startSimulation(){
     microprocessor_t* proc = getMicroProcessor();
     int debugMode = askMode();
     if(debugMode){
-        launchInDebugMode(proc);
+        launchDebugModev2(proc);
     }
     else{
         launchInNormalMode(proc);
