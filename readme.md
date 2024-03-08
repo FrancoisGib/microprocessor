@@ -30,6 +30,7 @@ Les programmes sont dans le dossier progs, il y en a 4, deux qui chargent des do
 ## Parser en Assembleur
 
 Pour parser le programme en assembleur, il faut ajouter le flag **-s** à la ligne de commande.
+Le fichier parser s'appelle **program.ms**
 
 ## Debugger
 

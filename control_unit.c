@@ -166,13 +166,11 @@ void control_mv_Rn_Rm(int8_t* params) {
 }
 
 void control_jmp_hhll(int8_t* params) {
-    printf("jump\n");
     JMP(0);
 }
 
 void control_jz(int8_t* params) {
     microprocessor_t* micro = getMicroProcessor();
-    printf("FZ %d\n", micro->FZ);
     if (micro->FZ == 1)
         JMP(2);
     else {
