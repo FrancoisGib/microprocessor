@@ -28,10 +28,7 @@ int main(int argc, char* argv[]) {
         void* ptr = next(program_names);
         char* filename = (char*)ptr;
         int16_t last_instruction_address = readFile(filename, parse_assembly, output);
-        if (is_empty(program_names))
-            callControlUnit(debugger, last_instruction_address);
-        else
-            callControlUnit(0, last_instruction_address);
+        callControlUnit(debugger, last_instruction_address);
         free(ptr);
         if (parse_assembly)
             fwrite("\n", 1, 1, output);
